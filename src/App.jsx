@@ -1,13 +1,19 @@
 
+import { BrowserRouter, Routes, Route } from 'react-router'
 import './App.css'
+import Landing from './pages/user/Landing'
 
 function App() {
 
 
   return (
-    <>
-      <h1 className="text-3xl font-bold underline bg-red-500">App is good </h1>
-    </>
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Landing/>}>
+
+      </Route>
+    </Routes>
+    </BrowserRouter>
   )
 }
 
