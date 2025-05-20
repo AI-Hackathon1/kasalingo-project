@@ -1,0 +1,31 @@
+.transparent-form {
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+  transform: scale(1);
+  transition: all 0.3s ease;
+  will-change: transform;
+}
+
+.transparent-form:hover {
+  transform: scale(1.05);
+}
+
+.transparent-input {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.transparent-input:focus {
+  outline: none;
+  border-color: #ec4899;
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2);
+}

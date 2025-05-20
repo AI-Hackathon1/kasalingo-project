@@ -20,7 +20,7 @@ const Register = () => {
       </div>
 
       <div className="relative flex items-center justify-center min-h-screen">
-        <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-md transform transition-all duration-300 hover:scale-105">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 w-full max-w-md transform transition-all duration-300 hover:scale-105">
           <h1 className="text-2xl sm:text-3xl text-pink-500 font-bold text-center mb-6 sm:mb-8 animate-pulse">
             Join Kasalingo!
           </h1>
@@ -33,7 +33,7 @@ const Register = () => {
                 name="username"
                 required
                 placeholder="Enter your username"
-                className="w-full p-2.5 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200"
+                className="w-full p-2.5 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 bg-white/90"
               />
             </div>
 
@@ -42,7 +42,7 @@ const Register = () => {
                 id="age"
                 name="age"
                 required
-                className="w-full p-2.5 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200"
+                className="w-full p-2.5 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 bg-white/90"
               >
                 <option value="">Select your age</option>
                 {Array.from({ length: 9 }, (_, i) => i + 4).map(age => (
@@ -58,7 +58,7 @@ const Register = () => {
                 name="parentEmail"
                 required
                 placeholder="Parent's email"
-                className="w-full p-2.5 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200"
+                className="w-full p-2.5 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 bg-white/90"
               />
             </div>
 
@@ -69,7 +69,7 @@ const Register = () => {
                 name="password"
                 required
                 placeholder="Create password"
-                className="w-full p-2.5 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200"
+                className="w-full p-2.5 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 bg-white/90"
               />
             </div>
 
@@ -80,7 +80,7 @@ const Register = () => {
                 name="confirmPassword"
                 required
                 placeholder="Confirm password"
-                className="w-full p-2.5 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200"
+                className="w-full p-2.5 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 bg-white/90"
               />
             </div>
 
@@ -89,7 +89,7 @@ const Register = () => {
                 id="language"
                 name="language"
                 required
-                className="w-full p-2.5 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200"
+                className="w-full p-2.5 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 bg-white/90"
               >
                 <option value="">Select language</option>
                 <option value="Spanish">Spanish</option>
