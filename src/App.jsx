@@ -1,98 +1,123 @@
-
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import AdminLayout from './layouts/AdminLayout';
+import Dashboard from './pages/admin/Dashboard';
+import Users from './pages/admin/Users';
+import Lessons from './pages/admin/lessons/Lessons';
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
+import Home from './pages/Home';
+import Landing from './pages/user/Landing';
 import './App.css';
 
-// Pages
-import Landing from './pages/user/Landing';
-import Register from './pages/auth/Register';
-import Login from './pages/auth/Login';
-import AdminDashboard from './pages/admin/Dashboard';
-import AdminUsers from './pages/admin/users/Users';
-import AdminLayout from './layouts/AdminLayout';
-
 // Protected Route Component
-const ProtectedRoute = ({ children, requiredRole = 'user' }) => {
-  const [authState, setAuthState] = useState({
-    isAuthenticated: false,
-    userRole: '',
-    isLoading: true
-  });
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role') || '';
-    
-    // In a real app, you would validate the token with your backend
-    setAuthState({
-      isAuthenticated: !!token,
-      userRole: role,
-      isLoading: false
-    });
-  }, []); // Empty dependency array means this effect runs once on mount
-
-  if (authState.isLoading) {
+const ProtectedRoute = ({ children, adminOnly = false }) => {
+  const { isAuthenticated, isAdmin, isLoading } = useAuth();
+  
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
       </div>
     );
   }
 
-  if (!authState.isAuthenticated) {
-    return <Navigate to="/login" replace state={{ from: window.location.pathname }} />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
   }
 
-  // Check if user has the required role
-  if (requiredRole === 'admin' && authState.userRole !== 'admin') {
+  if (adminOnly && !isAdmin) {
     return <Navigate to="/" replace />;
   }
 
-  return children || <Outlet />;
+  return children;
 };
 
-// Admin Layout Wrapper
-const AdminLayoutWrapper = () => (
-  <ProtectedRoute requiredRole="admin">
-    <AdminLayout />
-  </ProtectedRoute>
-);
+// Public Route Component (for login/register when already authenticated)
+const PublicRoute = ({ children }) => {
+  const { isAuthenticated, isAdmin, isLoading } = useAuth();
+  
+  console.log('PublicRoute - isAuthenticated:', isAuthenticated);
+  console.log('PublicRoute - isAdmin:', isAdmin);
+  console.log('PublicRoute - isLoading:', isLoading);
+  console.log('PublicRoute - current path:', window.location.pathname);
+  
+  if (isLoading) {
+    console.log('PublicRoute - showing loading state');
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
+
+  // TEMPORARILY DISABLED for testing
+  // if (isAuthenticated && window.location.pathname.match(/^\/(login|register)/)) {
+  //   console.log('PublicRoute - redirecting to:', isAdmin ? '/admin' : '/home');
+  //   return <Navigate to={isAdmin ? "/admin" : "/home"} replace />;
+  // }
+
+  console.log('PublicRoute - rendering children');
+  return children;
+};
 
 function App() {
+  console.log('App - rendering');
+  
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Landing />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-
-          {/* Admin Routes */}
-          <Route element={<AdminLayoutWrapper />}>
-            <Route index path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/users" element={<AdminUsers />} />
-            {/* Add more admin routes here */}
-          </Route>
-
-          {/* 404 Route */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-      <ToastContainer 
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-    </>
+    <AuthProvider>
+      <Router>
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
+          <Toaster position="top-right" />
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Landing />} />
+            <Route path="/home" element={<Home />} />
+            
+            {/* Auth Routes */}
+            <Route 
+              path="/login" 
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              } 
+            />
+            <Route 
+              path="/register" 
+              element={
+                <PublicRoute>
+                  <Register />
+                </PublicRoute>
+              } 
+            />
+            
+            {/* Admin Routes */}
+            <Route path="/admin" element={
+              <ProtectedRoute adminOnly>
+                <AdminLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<Dashboard />} />
+              <Route path="users" element={
+                <ProtectedRoute adminOnly>
+                  <Users />
+                </ProtectedRoute>
+              } />
+              <Route path="lessons" element={
+                <ProtectedRoute adminOnly>
+                  <Lessons />
+                </ProtectedRoute>
+              } />
+            </Route>
+            
+            {/* 404 Route */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 

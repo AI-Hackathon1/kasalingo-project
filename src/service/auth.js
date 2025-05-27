@@ -24,11 +24,32 @@ export const apiRegister = async (payload) => {
 
 export const apiRegisterAdmin = async (payload) => {
   try {
-    const response = await apiClient.post("/api/admin/register", payload, {
+    // Format the payload to match the expected API format
+    const adminPayload = {
+      userName: payload.userName.startsWith('admin_') 
+        ? payload.userName 
+        : `admin_${payload.userName}`,
+      email: payload.email,
+      password: payload.password,
+      confirmPassword: payload.confirmPassword
+    };
+
+    console.log('Sending admin registration request with payload:', adminPayload);
+    
+    const response = await apiClient.post("/api/admin/register", adminPayload, {
       headers: {
         "Content-Type": "application/json"
       },
-      validateStatus: status => status < 500 // Don't throw for 4xx errors
+      validateStatus: (status) => {
+        console.log('Received status:', status);
+        return status < 500; // Don't throw for 4xx errors
+      }
+    });
+    
+    console.log('Admin registration response:', {
+      status: response.status,
+      statusText: response.statusText,
+      data: response.data
     });
     
     if (response.status >= 400) {
@@ -39,18 +60,38 @@ export const apiRegisterAdmin = async (payload) => {
     
     return response;
   } catch (error) {
-    console.error('API Admin Register Error:', error);
+    console.error('API Admin Register Error:', {
+      message: error.message,
+      response: error.response?.data || 'No response data',
+      status: error.response?.status
+    });
     throw error;
   }
 };
 
 export const apiLogin = async (payload) => {
   try {
-    const response = await apiClient.post("/api/user/login", payload, {
+    console.log('Sending login request with payload:', {
+      ...payload,
+      password: '[REDACTED]' // Don't log actual password
+    });
+    
+    const response = await apiClient.post("/api/user/login", {
+      userName: payload.userName,
+      password: payload.password
+    }, {
       headers: {
         "Content-Type": "application/json"
       },
-      validateStatus: status => status < 500
+      validateStatus: (status) => {
+        console.log('Received status:', status);
+        return status < 500; // Don't throw for 4xx errors
+      }
+    });
+
+    console.log('Login response:', {
+      status: response.status,
+      data: response.data
     });
 
     if (response.status >= 400) {
@@ -61,18 +102,40 @@ export const apiLogin = async (payload) => {
     
     return response;
   } catch (error) {
-    console.error('API Login Error:', error);
+    console.error('API Login Error:', {
+      message: error.message,
+      response: error.response?.data || 'No response data',
+      status: error.response?.status
+    });
     throw error;
   }
 };
 
 export const apiAdminLogin = async (payload) => {
   try {
-    const response = await apiClient.post("/api/admin/login", payload, {
+    console.log('Sending admin login request with payload:', {
+      userName: payload.userName,
+      password: '[REDACTED]' // Don't log actual password
+    });
+    
+    const response = await apiClient.post("/api/admin/login", {
+      userName: payload.userName.startsWith('admin_') 
+        ? payload.userName 
+        : `admin_${payload.userName}`,
+      password: payload.password
+    }, {
       headers: {
         "Content-Type": "application/json"
       },
-      validateStatus: status => status < 500
+      validateStatus: (status) => {
+        console.log('Received status:', status);
+        return status < 500; // Don't throw for 4xx errors
+      }
+    });
+
+    console.log('Admin login response:', {
+      status: response.status,
+      data: response.data
     });
 
     if (response.status >= 400) {
@@ -83,7 +146,11 @@ export const apiAdminLogin = async (payload) => {
     
     return response;
   } catch (error) {
-    console.error('API Admin Login Error:', error);
+    console.error('API Admin Login Error:', {
+      message: error.message,
+      response: error.response?.data || 'No response data',
+      status: error.response?.status
+    });
     throw error;
   }
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Lovely from '../assets/images/Lovely.jpg';
 
 const Navbar = () => {
@@ -9,12 +10,18 @@ const Navbar = () => {
         className="flex justify-end items-center gap-4 min-h-[100px] p-4 sm:p-6 md:p-8 bg-cover "
         style={{ backgroundImage: `url(${Lovely})` }}
       >
-        <span className="px-6 py-2 bg-yellow-500 rounded-full text-sm sm:text-lg md:text-xl text-white font-semibold">
+        <Link 
+          to="/login" 
+          className="px-6 py-2 bg-yellow-500 rounded-full text-sm sm:text-lg md:text-xl text-white font-semibold hover:bg-yellow-600 transition-colors"
+        >
           Log In
-        </span>
-        <span className="px-6 py-2 bg-pink-500 rounded-full text-sm sm:text-lg md:text-xl text-white font-semibold">
+        </Link>
+        <Link 
+          to="/register" 
+          className="px-6 py-2 bg-pink-500 rounded-full text-sm sm:text-lg md:text-xl text-white font-semibold hover:bg-pink-600 transition-colors"
+        >
           Sign Up
-        </span>
+        </Link>
       </div>
 
       {/* SVG Wave BELOW the navbar, not inside */}
