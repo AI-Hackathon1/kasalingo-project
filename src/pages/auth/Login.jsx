@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { motion } from 'framer-motion';
@@ -10,7 +10,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user, setUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -37,9 +37,18 @@ const Login = () => {
     
     try {
       setIsLoading(true);
+      console.log('Attempting login with:', formData.username, isAdmin);
+      
+      // Clear any previous auth data
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      
+      // Call login with the correct parameter format
       const result = await login(formData.username, formData.password, isAdmin);
       
-      if (result.success) {
+      console.log('Login result:', result);
+      
+      if (result && result.success) {
         // Update login streak
         const newStreak = (loginStreak || 0) + 1;
         setLoginStreak(newStreak);
@@ -48,15 +57,14 @@ const Login = () => {
         // Show celebration animation
         setShowCelebration(true);
         
-        // Show success message
-        toast.success(`Welcome back, ${result.user.name || result.user.userName}!`);
+        // Store user data in localStorage (already done in AuthContext)
+        // Just make sure we have the latest user data in state
+        setUser(result.user);
         
-        // Wait for animation to complete (3 seconds) then navigate
-        setTimeout(() => {
-          const isUserAdmin = result.user?.role === 'admin' || isAdmin;
-          const redirectPath = isUserAdmin ? '/admin' : '/home';
-          navigate(redirectPath);
-        }, 3000);
+        // Redirect to admin dashboard if user is an admin
+        if (result.user?.role === 'admin') {
+          navigate('/admin');
+        }
       } else {
         // Shake animation on error
         document.getElementById('loginForm').classList.add('animate-shake');
@@ -139,9 +147,19 @@ const Login = () => {
             numberOfPieces={500}
             colors={['#FFD700', '#FFA500', '#FF69B4', '#00BFFF', '#FF1493']}
           />
-          <div className="text-center bg-white p-8 rounded-lg shadow-xl animate-bounce-in border-4 border-yellow-300 border-opacity-50">
-            <h2 className="text-2xl font-bold text-yellow-600 mb-2">Welcome Back! 👋</h2>
-            <p className="text-gray-600 mb-4">You're being redirected to your dashboard...</p>
+          <div className="text-center bg-white p-8 rounded-2xl shadow-2xl animate-bounce border-4 border-yellow-300 border-opacity-50">
+            <h2 className="text-3xl font-bold text-yellow-600 mb-3">Welcome Back! 🎉</h2>
+            <p className="text-lg text-gray-600 mb-6">
+              {user?.name ? `Great to see you again, ${user.name}!` : 'You\'re all set!'}
+            </p>
+            <div className="flex justify-center">
+              <button
+                onClick={() => navigate('/home')}
+                className="px-6 py-2 bg-gradient-to-r from-yellow-400 to-pink-500 text-white rounded-full font-medium hover:opacity-90 transition-all transform hover:scale-105 shadow-md"
+              >
+                Continue to Dashboard
+              </button>
+            </div>
           </div>
         </div>
       )}

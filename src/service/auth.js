@@ -69,16 +69,13 @@ export const apiRegisterAdmin = async (payload) => {
   }
 };
 
-export const apiLogin = async (payload) => {
+export const apiLogin = async (username, password) => {
   try {
-    console.log('Sending login request with payload:', {
-      ...payload,
-      password: '[REDACTED]' // Don't log actual password
-    });
+    console.log('Sending login request with:', { username });
     
     const response = await apiClient.post("/api/user/login", {
-      userName: payload.userName,
-      password: payload.password
+      userName: username,
+      password: password
     }, {
       headers: {
         "Content-Type": "application/json"
@@ -111,18 +108,15 @@ export const apiLogin = async (payload) => {
   }
 };
 
-export const apiAdminLogin = async (payload) => {
+export const apiAdminLogin = async (username, password) => {
   try {
-    console.log('Sending admin login request with payload:', {
-      userName: payload.userName,
-      password: '[REDACTED]' // Don't log actual password
-    });
+    console.log('Sending admin login request with:', { username });
     
     const response = await apiClient.post("/api/admin/login", {
-      userName: payload.userName.startsWith('admin_') 
-        ? payload.userName 
-        : `admin_${payload.userName}`,
-      password: payload.password
+      userName: username.startsWith('admin_') 
+        ? username 
+        : `admin_${username}`,
+      password: password
     }, {
       headers: {
         "Content-Type": "application/json"
