@@ -1,11 +1,16 @@
 import React from 'react'
 import Navbar from '../../components/navbar'
-import Lovely1 from '../../assets/images/Lovely1.jpg' // Replace with actual image paths
-import Lovely2 from '../../assets/images/Lovely2.jpg'
-import Lovely4 from '../../assets/images/Lovely4.jpg'
+import Footer from '../../components/Footer'
 import Lovely from '../../assets/images/Lovely.jpg'
-import Lovely5 from '../../assets/images/Lovely5.png'
+import Lovely1 from '../../assets/images/Lovely1.jpg'
+import Lovely2 from '../../assets/images/Lovely2.jpg'
+import Lovely3 from '../../assets/images/Lovely3.jpg'
+import Lovely5 from '../../assets/images/Lovely5.jpg'
 import Lovely6 from '../../assets/images/Lovely6.jpg'
+import Lovely7 from '../../assets/images/Lovely7.jpg'
+import { Link } from 'react-router'
+
+
 
 const Landing = () => {
   return (
@@ -14,155 +19,232 @@ const Landing = () => {
 
       <Navbar />
 
-      <section className="relative w-full min-h-screen bg-purple-500 px-4 py-12 overflow-hidden">
-        {/* Background Images */}
-        <img
-          src={Lovely1}
-          alt="Top Left Decor"
-          className="absolute top-2 left-2 border-2 border-blue-500 rounded-full w-32 md:w-48 lg:w-60 object-contain z-0 animate-pulse"
-        />
-        <img
-          src={Lovely1}
-          alt="Top Right Decor"
-          className="absolute top-2 right-2 border-2 border-blue-500 rounded-full w-32 md:w-48 lg:w-60 object-contain z-0 animate-pulse"
-        />
-        <img
-          src={Lovely2}
-          alt="Bottom Right Decor"
-          className="absolute bottom-2 right-2 border-2 border-blue-500 rounded-full w-32 md:w-48 lg:w-60 object-contain z-0 animate-pulse "
-        />
-        <img
-          src={Lovely2}
-          alt="Bottom Left Decor"
-          className="absolute bottom-2 left-2 border-2 border-blue-500 rounded-full w-32 md:w-48 lg:w-60 object-contain z-0 animate-pulse"
-        />
-
-        {/* Content */}
-        <div className="relative z-10 flex flex-col items-center text-center space-y-4 mt-12 md:mt-20">
-          <span className="text-5xl md:text-3xl lg:text-4xl font-bold text-white">
-            Ghanaian Languages Adventure!
-          </span>
-          <span className="text-lg md:text-4xl text-blue-800 font-medium italic">
-            Kasalingo GH 100% Free and Easy to Use
-          </span>
-          <span className="text-lg md:text-4xl text-red-800 ">
-            Filled with Fun Games and Stories
-          </span>
-          <span className="text-lg md:text-4xl text-yellow-400">
-            Ages 4–12 around the world
-          </span>
-          <span className="text-lg md:text-4xl text-green-800">
-            Learn Ghanaian Languages and Culture
-          </span>
-
-         
-           <button className="mt-6 bg-yellow-400 hover:bg-yellow-500 text-white py-3 px-6 rounded-full text-lg font-semibold transition duration-300 ">
-            Join the Fun🧑‍🦯‍➡️
-          </button>
+            <section>
+        <div className="relative bg-cover bg-center bg-no-repeat min-h-[70vh] p-8 flex items-center justify-start text-center"
+          style={{ backgroundImage: `url(${Lovely})` }}>
+          <div className="absolute inset-0 bg-pink-500/60 z-0"></div>
+          <div className="relative z-10 max-w-2xl">
+            <h1 className="text-5xl md:text-6xl font-bold mb-4 text-[#FBCFE8]">
+              Hello Children! Learn Ghanaian Languages Everywhere You Are, Anytime! With Ease and Fun
+            </h1>
+            <p className="text-1xl leading-relaxed text-[#210F37]">
+              Kasalingo GH offers fun and engaging Ghanaian language lessons for children aged 4 to 12, both in Ghana and abroad. Our goal is to help the next generation stay connected to their roots, because language is a beautiful part of our culture.
+            </p>
+          </div>
         </div>
-       </section>
+      </section>
 
-       <section className='bg-pink-500'>
-         {/* Scrolling Buttons */}
-         <div className="overflow-hidden whitespace-nowrap bg-white py-4">
-         <div
-          className="inline-block animate-slide"
-          style={{
-          animation: 'slide 10s linear infinite',
-          display: 'inline-flex',
-          gap: '5rem',
-         }}
-        >
-        <button className="bg-pink-500 text-white py-2 px-6 rounded-full hover:scale-105 transition">
-        Learn Twi
-        </button>
-        <button className="bg-blue-500 text-white py-2 px-6 rounded-full hover:scale-105 transition">
-         Speak Ga
-        </button>
-        <button className="bg-black text-white py-2 px-6 rounded-full hover:scale-105 transition">
-         Read Ewe
-        </button>
-        <button className="bg-purple-500 text-white py-2 px-6 rounded-full hover:scale-105 transition">
-        Write Dagbani
-       </button>
+      <section className="bg-[#FBCFE8] min-h-screen flex items-center justify-center p-6">
+  <div className="max-w-2xl w-full rounded-3xl overflow-hidden shadow-xl border border-pink-200 bg-white/80 backdrop-blur-2xl">
+    {/* Header Area */}
+    <div className="relative h-64 bg-gradient-to-tr from-[#FBCFE8] via-pink-100 to-white">
+      <div className="absolute inset-0 flex flex-col justify-center px-8 py-6">
+        <h2 className="text-3xl sm:text-4xl font-bold text-[#210F37] mb-2 drop-shadow-md">
+          About Our Platform
+        </h2>
+        <p className="text-[#210F37]/70 text-base sm:text-lg max-w-lg">
+          Empowering learners worldwide with Ghanaian language immersion, culture, and educational tools tailored for the modern child.
+        </p>
+      </div>
+      <div className="absolute bottom-3 right-4 bg-white/70 backdrop-blur-lg rounded-lg px-4 py-2 shadow text-[#210F37] font-semibold text-xs flex items-center space-x-2">
+        <span className="inline-block w-3 h-3 rounded-full bg-[#FDE68A] mr-1"></span>
+        <span>React Powered</span>
       </div>
     </div>
 
-     {/* Animated Slide Keyframes */}
-    <style>
-     {`
-      @keyframes slide {
-        0% {
-          transform: translateX(100%);
-        }
-        100% {
-          transform: translateX(-100%);
-        }
-        }
-      `}
-      </style>
-
-      {/* Styled Responsive Image */}
-      <div className="w-full flex justify-center mt-8 px-4">
-       <img
-       src={Lovely4}
-       alt="Lovely Ghana"
-       className="w-full max-w-4xl rounded-2xl shadow-xl object-cover"
-      />
+    {/* Content Area */}
+    <div className="px-8 py-7 bg-white/90">
+      <div className="flex flex-col sm:flex-row sm:justify-between gap-6 text-[#210F37]">
+        <div>
+          <p className="font-semibold text-lg">Our Vision</p>
+          <p className="mt-2 text-sm text-[#210F37]/80">
+            To reconnect Ghanaian children across the globe with their roots through fun, engaging, and culturally-rich learning experiences.
+          </p>
+        </div>
+        <div>
+          <p className="font-semibold text-lg">Our Team</p>
+          <p className="mt-2 text-sm text-[#210F37]/80">
+            A passionate team of educators, developers, and creatives committed to preserving and promoting local languages.
+          </p>
+        </div>
       </div>
-     </section>
-
-  
-
-     <section
-     className="h-auto min-h-[80vh] bg-cover bg-center py-10 px-4 md:px-12"
-     style={{ backgroundImage: `url(${Lovely})` }}
-     >
-     <h2 className="text-2xl md:text-3xl font-bold text-center text-pink-500 mb-8">
-      What's New❓
-     </h2>
-
-     <div className="flex flex-col gap-8 md:flex-row md:justify-between">
-     {/* Card 1 */}
-     <div className="flex-1 bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center">
-      <div className="w-full h-40 rounded-xl mb-4 flex items-center justify-center">
-        <img src={Lovely5} alt="" className='h-full' />
+      <div className="mt-7 pt-5 border-t border-[#FBCFE8]">
+        <p className="text-[#210F37]/70 text-base">
+          From language games to live tutoring, we’re building tools to celebrate heritage and help the next generation speak it proudly.
+        </p>
       </div>
-      <h3 className="text-lg font-semibold mb-2">Text Translation Lessons</h3>
-      <p className="text-sm mb-1">Type English Word</p>
-      <p className="text-sm mb-4">See Twi, Ga, Ewe, Dagbani Response</p>
-      <button className="bg-yellow-400 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
-        Learn More ❤️➡️
-      </button>
-    </div>
-
-    {/* Card 2 */}
-    <div className="flex-1 bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center">
-      <div className="w-full h-40  rounded-xl mb-4 flex items-center justify-center">
-        <img src={Lovely6} alt="" className='h-full rounded-lg' />
-      </div>
-      <h3 className="text-lg font-semibold mb-2">Fun Mini-games</h3>
-      <p className="text-sm mb-1">Match Names of Animals/Fruits in English</p>
-      <p className="text-sm mb-4">To Twi, Ga, Ewe and Dagbani Equivalent</p>
-      <button className="bg-yellow-400 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
-        Learn More ❤️➡️
-      </button>
-    </div>
-
-    {/* Card 3 */}
-    <div className="flex-1 bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center">
-      <div className="w-full h-40 bg-gray-200 rounded-xl mb-4 flex items-center justify-center">
-       <img src="" alt="" className='h-full' />
-      </div>
-      <h3 className="text-lg font-semibold mb-2">Interesting Ghanaian Tales</h3>
-      <p className="text-sm mb-1">Sharpen your Listening/Reading Skills</p>
-      <p className="text-sm mb-4">In Twi, Ga, Ewe and Dagbani</p>
-      <button className="bg-yellow-400 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
-        Learn More ❤️➡️
-      </button>
     </div>
   </div>
 </section>
+
+<section className="bg-[#210F37] min-h-[80vh] py-10 px-4 flex flex-col">
+  {/* Section Title */}
+  <div className="text-center mb-10">
+    <h2 className="text-3xl md:text-4xl font-bold text-[#FBCFE8]">Featured Languages</h2>
+    <p className="text-[#FBCFE8] mt-2 text-sm sm:text-base max-w-md mx-auto">
+      Explore and grow your skills in local Ghanaian languages
+    </p>
+  </div>
+
+  {/* Cards Grid */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl mx-auto flex-grow">
+    {/* Card 1 */}
+    <div className="bg-[#FBCFE8] p-6 rounded-2xl shadow-lg text-center hover:scale-95 transition-transform duration-300 flex flex-col justify-center">
+      <h1 className="text-2xl md:text-4xl font-bold text-pink-600 mb-2">Learn Twi</h1>
+      <p className="text-pink-700 text-sm md:text-base mb-2">Master common phrases and enhance your vocabulary with ease.</p>
+      <span className="text-2xl">🧠📖🎈</span>
+    </div>
+
+    {/* Card 2 */}
+    <div className="bg-white p-6 rounded-2xl shadow-lg text-center hover:scale-95 transition-transform duration-300 flex flex-col justify-center">
+      <h1 className="text-2xl md:text-4xl font-bold text-[#210F37] mb-2">Speak Ga</h1>
+      <p className="text-[#210F37] text-sm md:text-base mb-2">Speak confidently with native Ga expressions and tips.</p>
+      <span className="text-2xl">🗣️🎤✨</span>
+    </div>
+
+    {/* Card 3 */}
+    <div className="bg-[#FBCFE8] p-6 rounded-2xl shadow-lg text-center hover:scale-95 transition-transform duration-300 flex flex-col justify-center">
+      <h1 className="text-2xl md:text-4xl font-bold text-pink-600 mb-2">Read Ewe</h1>
+      <p className="text-pink-700 text-sm md:text-base mb-2">Improve your reading skills and recognize Ewe script patterns.</p>
+      <span className="text-2xl">📚👓🌟</span>
+    </div>
+
+    {/* Card 4 */}
+    <div className="bg-[#FBCFE8] p-6 rounded-2xl shadow-lg text-center hover:scale-95 transition-transform duration-300 flex flex-col justify-center">
+      <h1 className="text-2xl md:text-4xl font-bold text-[#210F37] mb-2">Write Dagbani</h1>
+      <p className="text-[#FBCFE8] text-sm md:text-base mb-2">Practice spelling and sentence construction in Dagbani.</p>
+      <span className="text-2xl">✍️📝🎨</span>
+    </div>
+  </div>
+</section>
+
+<section className="py-10 px-4 bg-[#FBCFE8]">
+  <h1 className="text-3xl md:text-4xl font-bold text-center mb-10 text-[#2C1B47]">Level Of Learners</h1>
+  <div className="grid grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto bg-[#210F37] rounded-sm overflow-hidden">
+    {/* Fundamental */}
+    <div className="flex flex-col items-center text-center p-6 space-y-4">
+      <img src={Lovely1} alt="Fundamental" className="w-full h-64 object-cover rounded-lg shadow-md cursor-pointer hover:animate-pulse" />
+      <h3 className="text-4xl font-semibold text-[#FBCFE8]">Fundamental</h3>
+      <p className="text-pink-500 text-2xl">Ages 4 – 6</p>
+    </div>
+
+    {/* Intermediate */}
+    <div className="flex flex-col items-center text-center p-6 space-y-4">
+      <img src={Lovely2} alt="Intermediate" className="w-full h-64 object-cover rounded-lg shadow-md cursor-pointer hover:animate-pulse" />
+      <h3 className="text-4xl font-semibold text-[#FBCFE8]">Intermediate</h3>
+      <p className="text-pink-500 text-2xl">Ages 7 – 9</p>
+    </div>
+  </div>
+
+  {/* Advanced */}
+  <div className="max-w-md mx-auto bg-[#210F37] rounded-sm mt-6">
+    <div className="flex flex-col items-center text-center p-6 space-y-4">
+      <img src={Lovely3} alt="Advanced" className="w-full h-64 object-cover rounded-lg shadow-md cursor-pointer hover:animate-pulse" />
+      <h3 className="text-4xl font-semibold text-[#FBCFE8]">Advanced</h3>
+      <p className="text-pink-500 text-2xl">Ages 10 – 12</p>
+    </div>
+  </div>
+</section>
+
+
+
+<section className="h-auto min-h-[100vh] bg-[#2C1B47] bg-cover bg-center py-10 px-4 md:px-12">
+  <h2 className="text-3xl md:text-4xl font-bold text-center text-[#FBCFE8] mb-8">Featured Lessons❓</h2>
+  <div className="flex flex-col gap-8 md:flex-row md:justify-between">
+    {/* Lesson 1 */}
+    <div className="flex-1 bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center text-white">
+      <div className="w-full h-80 rounded-xl mb-4">
+        <img src={Lovely5} alt="Text Translation Lessons" className="h-full w-full rounded-lg" />
+      </div>
+      <h3 className="text-lg font-semibold mb-2 text-[#2C1B47]">Text Translation Lessons</h3>
+      <p className="text-sm mb-1 text-[#2C1B47]">Type English Word</p>
+      <p className="text-sm mb-4 text-[#2C1B47]">See Twi, Ga, Ewe, Dagbani Response</p>
+      <Link to='/Register' className="bg-pink-500 text-white px-4 py-2 rounded-full transition hover:bg-pink-700">
+        Learn More ❤️➡️
+      </Link>
+    </div>
+
+    {/* Lesson 2 */}
+    <div className="flex-1 bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center text-white">
+      <div className="w-full h-80 rounded-xl mb-4">
+        <img src={Lovely6} alt="Fun Mini-games" className="h-full w-full rounded-lg" />
+      </div>
+      <h3 className="text-lg font-semibold mb-2 text-[#2C1B47]">Fun Mini-games</h3>
+      <p className="text-sm mb-1 text-[#2C1B47]">Match Names of Animals/Fruits in English</p>
+      <p className="text-sm mb-4 text-[#2C1B47]">To Twi, Ga, Ewe and Dagbani Equivalent</p>
+      <Link to='/Register' className="bg-pink-500 text-white px-4 py-2 rounded-full transition hover:bg-pink-700">
+        Learn More ❤️➡️
+      </Link>
+    </div>
+
+    {/* Lesson 3 */}
+    <div className="flex-1 bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center text-white">
+      <div className="w-full h-80 rounded-xl mb-4">
+        <img src={Lovely7} alt="Interesting Ghanaian Tales" className="h-full w-full rounded-lg" />
+      </div>
+      <h3 className="text-lg font-semibold mb-2 text-[#2C1B47]">Interesting Ghanaian Tales</h3>
+      <p className="text-sm mb-1 text-[#2C1B47]">Sharpen your Listening/Reading Skills</p>
+      <p className="text-sm mb-4 text-[#2C1B47]">In Twi, Ga, Ewe and Dagbani</p>
+      <Link to='/Register' className="bg-pink-500 text-white px-4 py-2 rounded-full transition hover:bg-pink-700">
+        Learn More ❤️➡️
+      </Link>
+    </div>
+  </div>
+</section>
+
+
+
+      <section className="bg-[#FBCFE8] py-12 px-6 text-[#2C1B47]">
+  <div className="max-w-6xl mx-auto">
+    {/* Section Header */}
+    <div className="text-center mb-12">
+      <h2 className="text-4xl font-bold mb-2">Meet the Kasalingo Team</h2>
+      <p className="text-[#2C1B47] text-lg">
+        A passionate trio working to bridge cultures through Ghanaian languages.
+      </p>
+    </div>
+
+    {/* Team Members */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      {/* Frontend Developer 1 */}
+      <div className="bg-[#2C1B47] rounded-xl p-6 text-center shadow-md">
+        <img
+          src="https://example.com/frontend1.jpg" // Replace with actual image URL
+          alt="Frontend Developer 1"
+          className="w-32 h-32 mx-auto rounded-full object-cover mb-4 border-4 border-[#FBCFE8]"
+        />
+        <h3 className="text-2xl font-semibold text-white">Frontend Developer</h3>
+        <p className="text-pink-200">Builds beautiful and responsive user interfaces for Kasalingo.</p>
+      </div>
+
+      {/* Frontend Developer 2 */}
+      <div className="bg-[#2C1B47] rounded-xl p-6 text-center shadow-md">
+        <img
+          src="https://example.com/frontend2.jpg" // Replace with actual image URL
+          alt="Frontend Developer 2"
+          className="w-32 h-32 mx-auto rounded-full object-cover mb-4 border-4 border-[#FBCFE8]"
+        />
+        <h3 className="text-2xl font-semibold text-white">Frontend Developer</h3>
+        <p className="text-pink-200">Focuses on intuitive UX and seamless app functionality.</p>
+      </div>
+
+      {/* Backend Developer */}
+      <div className="bg-[#2C1B47] rounded-xl p-6 text-center shadow-md">
+        <img
+          src="https://example.com/backend.jpg" // Replace with actual image URL
+          alt="Backend Developer"
+          className="w-32 h-32 mx-auto rounded-full object-cover mb-4 border-4 border-[#FBCFE8]"
+        />
+        <h3 className="text-2xl font-semibold text-white">Backend Developer</h3>
+        <p className="text-[#FBCFE8]">Handles all the logic and data flow behind the scenes at Kasalingo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+      <Footer />
+
+
 
     </div>
   )
