@@ -10,7 +10,7 @@ import Register from './pages/auth/Register';
 import Home from './pages/Home';
 import Landing from './pages/user/Landing';
 import GamesPage from './components/pages/GamesPage';
-import LessonsPage from './pages/lessons/Lessons';
+import LessonsPage from './pages/user/Lessons';
 import StoriesPage from './pages/Stories';
 import StorePage from './pages/Store';
 import ProfilePage from './pages/Profile';
