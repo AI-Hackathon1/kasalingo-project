@@ -1,24 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Lovely from '../assets/images/Lovely.jpg';
+
 
 const Navbar = () => {
   return (
     <div className="w-full overflow-hidden">
       {/* Navbar with background image */}
       <div
-        className="flex justify-end items-center gap-4 min-h-[100px] p-4 sm:p-6 md:p-8 bg-cover "
-        style={{ backgroundImage: `url(${Lovely})` }}
-      >
+        className="flex justify-end items-center gap-4 min-h-[100px] p-4 sm:p-6 md:p-8 bg-[#210F37] ">
         <Link 
-          to="/login" 
-          className="px-6 py-2 bg-yellow-500 rounded-full text-sm sm:text-lg md:text-xl text-white font-semibold hover:bg-yellow-600 transition-colors"
+          to="/Login" 
+          className="px-6 py-2 bg-[#FBCFE8] rounded-full text-sm sm:text-lg md:text-xl text-pink-500 font-semibold hover:bg-yellow-600 transition-colors"
         >
           Log In
         </Link>
         <Link 
-          to="/register" 
-          className="px-6 py-2 bg-pink-500 rounded-full text-sm sm:text-lg md:text-xl text-white font-semibold hover:bg-pink-600 transition-colors"
+          to="/Register" 
+          className="px-6 py-2  rounded-full text-sm sm:text-lg md:text-xl text-pink-500 font-semibold hover:bg-pink-600 transition-colors"
         >
           Sign Up
         </Link>
@@ -33,7 +31,7 @@ const Navbar = () => {
         >
           <path
             d="M0.00,49.98 C150.00,150.00 349.71,-50.00 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
-            fill="#fef08a"
+            fill="#FBCFE8"
           />
         </svg>
       </div>
