@@ -21,10 +21,9 @@ export default function SweetCandyLogo({ size = "medium" }) {
           preserveAspectRatio="xMidYMid meet"
           style={{
             shapeRendering: "crispEdges",
-            imageRendering: "pixelated",
-            imageRendering: "-webkit-crisp-edges",
+            imageRendering: "-webkit-optimize-contrast",
             imageRendering: "crisp-edges",
-            textRendering: "optimizeSpeed",
+            textRendering: "optimizeSpeed"
           }}
         >
           <defs>
