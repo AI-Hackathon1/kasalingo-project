@@ -3,12 +3,15 @@ import { useAuth } from '../contexts/AuthContext';
 import { 
   FiMenu, FiBell, FiMic, FiX, FiVolume2, FiSend, 
   FiHome, FiBook, FiAward, FiSettings, FiHelpCircle, FiLogOut,
-  FiStar, FiHeart, FiAward as FiTrophy, FiClock, FiPlayCircle
+  FiStar, FiHeart, FiAward as FiTrophy, FiClock, FiPlayCircle, FiAlertCircle
 } from 'react-icons/fi';
+import { translateText } from '../service/gnlp';
+import { startRecording, textToSpeech, transcribeAudio } from '../service/voice';
 import { FaExchangeAlt, FaRegStar, FaStar } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import Logo from '../components/common/Logo';
 import Confetti from 'react-confetti';
+
 // Sound effects using Web Audio API
 const playBeep = (type = 'success') => {
   try {
@@ -54,9 +57,14 @@ const Home = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [inputText, setInputText] = useState('');
   const [translatedText, setTranslatedText] = useState('');
-  const [fromLanguage, setFromLanguage] = useState('English');
   const [toLanguage, setToLanguage] = useState('Twi');
+  const fromLanguage = 'English'; // Always set to English
   const [isListening, setIsListening] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioUrl, setAudioUrl] = useState('');
+  const audioRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
   const [isTranslating, setIsTranslating] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [showRecording, setShowRecording] = useState(false);
@@ -65,6 +73,47 @@ const Home = () => {
   const [dailyChallenge, setDailyChallenge] = useState(null);
   const [showGame, setShowGame] = useState(false);
   const [gameScore, setGameScore] = useState(0);
+  const [error, setError] = useState(null);
+  const [availableLanguages, setAvailableLanguages] = useState({
+    'en': 'English',
+    'tw': 'Twi',
+    'ee': 'Ewe',
+    'gaa': 'Ga',
+    'fat': 'Fante',
+    'yo': 'Yoruba',
+    'dag': 'Dagbani',
+    'ki': 'Kikuyu',
+    'gur': 'Gurune',
+    'luo': 'Luo',
+    'mer': 'Kimeru',
+    'kus': 'Kusaal'
+  });
+  const [languageCodeMap, setLanguageCodeMap] = useState({});
+  
+  // Initialize language code mapping
+  useEffect(() => {
+    const codeMap = {};
+    Object.entries(availableLanguages).forEach(([code, name]) => {
+      codeMap[name] = code;
+    });
+    setLanguageCodeMap(codeMap);
+  }, [availableLanguages]);
+
+  // Load available languages from API on component mount
+  useEffect(() => {
+    const loadLanguages = async () => {
+      try {
+        const langs = await import('../service/gnlp').then(m => m.fetchLanguages());
+        setAvailableLanguages(langs);
+      } catch (err) {
+        console.error('Failed to load languages, using defaults', err);
+        // Continue with default languages
+      }
+    };
+    
+    loadLanguages();
+  }, []);
+
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -103,26 +152,6 @@ const Home = () => {
     setDailyChallenge(challenge);
   }, []);
 
-  const languages = [
-    'English', 'Twi', 'Ga', 'Ewe', 'Dagbani', 'Dangme',
-    'Dagaare', 'Gonja', 'Kasem', 'Nzema', 'Fante',
-    'Hausa', 'Konkomba', 'Bimoba', 'Mampruli'
-  ];
-
-  // Mock translations
-  const translations = {
-    'Twi': {
-      'hello': 'Mema wo akye',
-      'thank you': 'Meda wase',
-      'how are you': 'Wo ho te sɛn',
-      'good morning': 'Mema wo akye',
-      'good night': 'Da yie',
-      'water': 'Nsuo',
-      'food': 'Aduane',
-      'friend': 'Adamfo'
-    }
-  };
-
   // Navigation items for sidebar
   const navItems = [
     { icon: <FiHome size={20} />, label: 'Home', path: '/' },
@@ -150,49 +179,50 @@ const Home = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Handle translation with better logic
-  const handleTranslate = () => {
+  // Handle translation with GNLP API
+  const handleTranslate = async () => {
     if (!inputText.trim()) return;
     
     playClick();
     setMascotState(MASCOT_STATES.THINKING);
     setIsTranslating(true);
-
-    setTimeout(() => {
-      const lowercaseWord = inputText.toLowerCase().trim();
-      let translation = 'Translation not found';
+    setError(null);
+    
+    try {
+      // Get language codes from language names
+      const sourceLangCode = languageCodeMap[fromLanguage] || 'en';
+      const targetLangCode = languageCodeMap[toLanguage] || 'tw';
+      console.log('Calling translateText with:', { 
+        text: inputText, 
+        sourceLang: 'en', 
+        targetLang: targetLangCode 
+      });
       
-      if (translations[toLanguage] && translations[toLanguage][lowercaseWord]) {
-        translation = translations[toLanguage][lowercaseWord];
-        
-        // Add to recent translations if not already there
-        const newTranslation = {
-          id: Date.now(),
-          from: inputText,
-          to: translation,
-          fromLang: fromLanguage,
-          toLang: toLanguage,
-          timestamp: new Date().toISOString()
-        };
-        
-        // Save to local storage
-        const recent = JSON.parse(localStorage.getItem('recentTranslations') || '[]');
-        const updatedRecent = [newTranslation, ...recent].slice(0, 10);
-        localStorage.setItem('recentTranslations', JSON.stringify(updatedRecent));
-        
-        // Play success sound and show confetti for successful translation
-        playSuccess();
-        setShowConfetti(true);
-        setMascotState(MASCOT_STATES.HAPPY);
-        setTimeout(() => setMascotState(MASCOT_STATES.IDLE), 2000);
-        setTimeout(() => setShowConfetti(false), 3000);
-      } else {
-        setMascotState(MASCOT_STATES.IDLE);
+      const result = await translateText(inputText, 'en', targetLangCode);
+      console.log('Translation result:', result);
+      
+      if (!result) {
+        throw new Error('No translation returned from the API');
       }
       
-      setTranslatedText(translation);
+      setTranslatedText(result);
+      console.log('translatedText state set to:', result);
+      
+      setMascotState(MASCOT_STATES.HAPPY);
+      playSuccess();
+      
+      // Show confetti for successful translation
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 3000);
+      
+    } catch (error) {
+      console.error('Translation error:', error);
+      setError(error.message || 'Translation failed. Please try again.');
+      setMascotState(MASCOT_STATES.IDLE);
+      setTranslatedText(''); // Clear any previous translation on error
+    } finally {
       setIsTranslating(false);
-    }, 800);
+    }
   };
   
   // Toggle favorite
@@ -230,9 +260,9 @@ const Home = () => {
     }, 3000);
   };
 
-  // Handle speech input
+  // Handle speech input - now using direct microphone access
   const startListening = () => {
-    setShowRecording(true);
+    toggleRecording();
   };
 
   // Handle text-to-speech
@@ -361,6 +391,113 @@ const Home = () => {
       </motion.div>
     );
   };
+
+  // Handle play audio
+  const handlePlayAudio = () => {
+    if (!translatedText) return;
+    
+    setIsPlaying(true);
+    const audio = new Audio();
+    audio.src = `https://translate.google.com/translate_tts?ie=UTF-8&q=${translatedText}&tl=${languageCodeMap[toLanguage] || 'tw'}&client=tw-ob`;
+    audio.play();
+    audio.onended = () => setIsPlaying(false);
+  };
+
+  // Handle recording functionality
+  const toggleRecording = async () => {
+    if (isRecording) {
+      // Stop recording if already recording
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+        mediaRecorderRef.current.stop();
+      }
+      setIsRecording(false);
+      setMascotState(MASCOT_STATES.THINKING);
+      return;
+    }
+
+    // Start new recording
+    try {
+      setError(null);
+      setIsRecording(true);
+      setMascotState(MASCOT_STATES.LISTENING);
+      
+      // Request microphone access
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      let audioChunks = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunks.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        
+        try {
+          // Transcribe the recorded audio
+          const text = await transcribeAudio(audioBlob, 'en'); // Always assume English input
+          if (text) {
+            setInputText(prev => prev ? `${prev} ${text}` : text);
+            // Auto-trigger translation
+            setTimeout(() => {
+              handleTranslate();
+            }, 500);
+          }
+        } catch (err) {
+          console.error('Transcription error:', err);
+          setError('Could not transcribe audio. Please try again.');
+        } finally {
+          setMascotState(MASCOT_STATES.IDLE);
+          setIsRecording(false);
+          // Stop all tracks to release the microphone
+          stream.getTracks().forEach(track => track.stop());
+        }
+      };
+
+      // Start recording
+      mediaRecorder.start();
+      mediaRecorderRef.current = mediaRecorder;
+
+      // Auto-stop after 10 seconds
+      setTimeout(() => {
+        if (mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+        }
+      }, 10000);
+      
+    } catch (error) {
+      console.error('Recording error:', error);
+      setError(error.message || 'Could not access microphone. Please check permissions.');
+      setIsRecording(false);
+      setMascotState(MASCOT_STATES.IDLE);
+    }
+  };
+
+  // Debug effect to log state changes and API config
+  useEffect(() => {
+    console.log('translatedText changed:', translatedText);
+    console.log('API Configuration:', {
+      baseURL: import.meta.env.VITE_GNLP_BASE_URL,
+      hasApiKey: !!import.meta.env.VITE_GNLP_API_KEY,
+      env: import.meta.env
+    });
+  }, [translatedText]);
+
+  // Clean up confetti and audio on unmount
+  useEffect(() => {
+    return () => {
+      setShowConfetti(false);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+      if (audioUrl) {
+        URL.revokeObjectURL(audioUrl);
+      }
+    };
+  }, [audioUrl]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 relative overflow-hidden">
@@ -547,16 +684,23 @@ const Home = () => {
           transition={{ duration: 0.5 }}
           className="mt-2 p-4 bg-yellow-100 rounded-lg shadow-md mb-6"
         >
-          <h2 className="text-xl font-bold text-purple-800 mb-3">Translate Words</h2>
+          <h2 className="text-xl font-bold text-purple-800 mb-3">Translate from English to:</h2>
           <div className="flex flex-col space-y-3">
+            <div className="bg-white rounded-lg px-4 py-2 border border-gray-300">
+              English
+            </div>
             <select 
-              value={toLanguage} 
+              value={toLanguage}
               onChange={(e) => setToLanguage(e.target.value)}
-              className="p-2 border rounded-md bg-white"
+              className="bg-white rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              {languages.map(lang => (
-                <option key={lang} value={lang}>{lang}</option>
-              ))}
+              {Object.entries(availableLanguages)
+                .filter(([code]) => code !== 'en') // Exclude English from target languages
+                .map(([code, name]) => (
+                  <option key={`to-${code}`} value={name}>
+                    {name}
+                  </option>
+                ))}
             </select>
             
             <div className="relative">
@@ -576,48 +720,128 @@ const Home = () => {
             </div>
             
             <div className="flex space-x-2">
+              {/* Test Translation Button - Remove in production */}
               <button 
-                onClick={handleTranslate}
-                disabled={!inputText.trim() || isTranslating}
-                className={`bg-purple-600 text-white py-2 px-4 rounded-md flex-grow flex items-center justify-center ${!inputText.trim() ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-700'}`}
+                onClick={() => {
+                  console.log('Test translation button clicked');
+                  setInputText('Hello');
+                  setTimeout(() => handleTranslate(), 100);
+                }}
+                className="bg-yellow-500 text-white px-3 py-1 rounded text-sm"
               >
-                {isTranslating ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Translating...
-                  </>
-                ) : 'Translate'}
+                Test Translation
               </button>
               
-              <button
-                onClick={startListening}
-                className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition-colors"
-              >
-                <FiMic size={20} />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleTranslate}
+                  disabled={isTranslating}
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-all disabled:opacity-50 flex items-center gap-2"
+                >
+                  {isTranslating ? 'Translating...' : 'Translate'}
+                  <FiSend />
+                </button>
+                <button
+                  onClick={toggleRecording}
+                  disabled={isTranslating}
+                  className={`p-3 rounded-full transition-all ${
+                    isRecording 
+                      ? 'animate-pulse bg-red-500 text-white' 
+                      : 'bg-white text-purple-600 hover:bg-gray-100 shadow-md'
+                  }`}
+                  title={isRecording ? 'Stop recording' : 'Record voice'}
+                >
+                  <FiMic className={isRecording ? 'text-white' : 'text-purple-600'} />
+                </button>
+                {translatedText && (
+                  <button
+                    onClick={handlePlayAudio}
+                    disabled={isPlaying}
+                    className={`p-3 rounded-full transition-all ${
+                      isPlaying 
+                        ? 'bg-purple-100 text-purple-700' 
+                        : 'bg-white text-purple-600 hover:bg-gray-100 shadow-md'
+                    }`}
+                    title="Listen to translation"
+                  >
+                    <FiVolume2 className={isPlaying ? 'animate-pulse' : ''} />
+                  </button>
+                )}
+              </div>
+              {error && (
+                <div className="flex items-center text-red-500 text-sm">
+                  <FiAlertCircle className="mr-1" />
+                  {error}
+                </div>
+              )}
             </div>
             
-            {translatedText && (
+            {/* Translation Result Section - Always show when there's content */}
+            <div className="mt-6">
               <motion.div 
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="mt-4 p-3 bg-white rounded-md shadow-sm"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ 
+                  opacity: translatedText ? 1 : 0.5, 
+                  height: translatedText ? 'auto' : 100,
+                  padding: translatedText ? '1rem' : '0.5rem'
+                }}
+                transition={{ duration: 0.3 }}
+                className={`rounded-xl shadow-md overflow-hidden ${
+                  translatedText 
+                    ? 'bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-100' 
+                    : 'bg-gray-100 border-2 border-dashed border-gray-300'
+                }`}
               >
-                <div className="flex justify-between items-center">
-                  <span className="font-medium text-gray-700">{translatedText}</span>
-                  <button 
-                    onClick={() => speakText(translatedText)}
-                    className="text-blue-500 p-1 hover:bg-blue-50 rounded-full"
-                    aria-label="Listen to translation"
-                  >
-                    <FiVolume2 size={20} />
-                  </button>
+                <div className="flex flex-col">
+                  {translatedText ? (
+                    <>
+                      <h3 className="text-sm font-semibold text-purple-700 mb-2 flex items-center">
+                        <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                        Translation in {toLanguage}
+                      </h3>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xl font-bold text-gray-800">{translatedText}</span>
+                      </div>
+                      <div className="flex space-x-2 mt-3">
+                        <button 
+                          onClick={() => {
+                            navigator.clipboard.writeText(translatedText);
+                            playBeep('success');
+                          }}
+                          className="text-purple-600 hover:bg-purple-50 p-2 rounded-full transition-colors"
+                          title="Copy to clipboard"
+                          aria-label="Copy translation"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                          </svg>
+                        </button>
+                        <button 
+                          onClick={() => speakText(translatedText)}
+                          className="text-blue-600 hover:bg-blue-50 p-2 rounded-full transition-colors"
+                          title="Listen to translation"
+                          aria-label="Listen to translation"
+                        >
+                          <FiVolume2 size={20} />
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex items-center justify-center h-full">
+                      <p className="text-gray-500 text-center">
+                        {isTranslating ? 'Translating...' : 'Translation will appear here'}
+                      </p>
+                    </div>
+                  )}
                 </div>
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: '100%' }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="h-0.5 bg-gradient-to-r from-purple-200 to-blue-200 mt-3"
+                />
               </motion.div>
-            )}
+            </div>
           </div>
         </motion.div>
 
