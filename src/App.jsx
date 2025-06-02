@@ -11,6 +11,7 @@ import Home from './pages/Home';
 import Landing from './pages/user/Landing';
 import GamesPage from './components/pages/GamesPage';
 import LessonsPage from './pages/user/Lessons';
+import LearnAndQuiz from './pages/user/LearnAndQuiz';
 import StoriesPage from './pages/Stories';
 import StorePage from './pages/Store';
 import ProfilePage from './pages/Profile';
@@ -215,6 +216,7 @@ function AppContent() {
           <Route index element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<Home />} />
           <Route path="/lessons" element={<LessonsPage />} />
+          <Route path="/lessons/:lessonId" element={<LearnAndQuiz />} />
           <Route path="/games" element={<GamesPage />} />
           <Route path="/stories" element={<StoriesPage />} />
           <Route path="/store" element={<StorePage />} />

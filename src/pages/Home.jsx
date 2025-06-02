@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { 
-  FiMenu, FiBell, FiMic, FiX, FiVolume2, FiSend, 
-  FiHome, FiBook, FiAward, FiSettings, FiHelpCircle, FiLogOut,
-  FiStar, FiHeart, FiAward as FiTrophy, FiClock, FiPlayCircle, FiAlertCircle
+  FiMic, FiVolume2, FiSend, FiStar, FiHeart, FiClock, FiPlayCircle, FiAlertCircle, FiHome, FiBook, FiAward, FiSettings, FiHelpCircle
 } from 'react-icons/fi';
-import { translateText } from '../service/gnlp';
-import { startRecording, textToSpeech, transcribeAudio } from '../service/voice';
 import { FaExchangeAlt, FaRegStar, FaStar } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
-import Logo from '../components/common/Logo';
 import Confetti from 'react-confetti';
+import Navigation from '../components/common/Navigation';
+import { translateText } from '../service/gnlp';
+import { startRecording, textToSpeech, transcribeAudio } from '../service/voice';
 
 // Sound effects using Web Audio API
 const playBeep = (type = 'success') => {
@@ -315,43 +314,11 @@ const Home = () => {
             <h3 className="text-lg font-bold mb-4 text-center">Record Your Voice</h3>
             
             <div className="flex justify-center mb-6">
-              <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center">
-                <FiMic size={36} className="text-red-600" />
-              </div>
-            </div>
-            
-            <div className="text-center mb-4">
-              <p className="text-gray-600 mb-1">Say the word or phrase</p>
-              <p className="font-bold text-lg">{inputText || "Hello"}</p>
-            </div>
-            
-            <div className="flex space-x-3">
               <button 
-                onClick={() => setShowRecording(false)}
-                className="flex-1 py-2 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full text-lg transition-colors duration-300 shadow-lg hover:shadow-xl"
+                onClick={stopRecording}
               >
-                Cancel
-              </button>
-              <button 
-                onClick={() => {
-                  // Simulate recording
-                  setTimeout(() => {
-                    setShowRecording(false);
-                    const phrases = [
-                      'Hello',
-                      'How are you',
-                      'Thank you',
-                      'Good morning',
-                      'Good night'
-                    ];
-                    const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-                    setInputText(randomPhrase);
-                  }, 1500);
-                }}
-                className="flex-1 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors flex items-center justify-center"
-              >
-                <FiMic size={16} className="mr-1" />
-                Record
+                Stop Recording
               </button>
             </div>
           </motion.div>
@@ -361,14 +328,129 @@ const Home = () => {
   );
 
   // Mascot component
-  const Mascot = ({ state }) => {
+  const Mascot = ({ state = MASCOT_STATES.IDLE }) => {
     const getMascotEmoji = () => {
       switch(state) {
-        case MASCOT_STATES.LISTENING: return '👂';
-        case MASCOT_STATES.THINKING: return '🤔';
-        case MASCOT_STATES.HAPPY: return '😊';
-        case MASCOT_STATES.CELEBRATING: return '🎉';
-        default: return '👋';
+        case MASCOT_STATES.LISTENING:
+          return (
+            <motion.div 
+              className="relative"
+              animate={{ 
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, -5, 0]
+              }}
+              transition={{ 
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              <span className="text-4xl">👂</span>
+              <motion.div 
+                className="absolute -bottom-1 -right-1 w-3 h-3 bg-red-500 rounded-full"
+                animate={{ 
+                  scale: [1, 1.5, 1],
+                  opacity: [0.7, 1, 0.7]
+                }}
+                transition={{ 
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+            </motion.div>
+          );
+        case MASCOT_STATES.THINKING:
+          return (
+            <motion.div 
+              className="relative"
+              animate={{ 
+                rotate: [0, 5, -5, 0],
+              }}
+              transition={{ 
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              <span className="text-4xl">🤔</span>
+            </motion.div>
+          );
+        case MASCOT_STATES.SPEAKING:
+          return (
+            <motion.div 
+              className="relative"
+              animate={{ 
+                scale: [1, 1.05, 1],
+              }}
+              transition={{ 
+                duration: 0.5,
+                repeat: Infinity,
+                repeatType: "reverse"
+              }}
+            >
+              <span className="text-4xl">💬</span>
+              <motion.div 
+                className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"
+                animate={{ 
+                  scale: [1, 1.5, 1],
+                  opacity: [0.7, 1, 0.7]
+                }}
+                transition={{ 
+                  duration: 1,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+            </motion.div>
+          );
+        case MASCOT_STATES.HAPPY:
+          return (
+            <motion.div
+              animate={{ 
+                scale: [1, 1.1, 1],
+                rotate: [0, 10, -10, 0]
+              }}
+              transition={{ 
+                duration: 2,
+                repeat: Infinity,
+                repeatDelay: 1
+              }}
+            >
+              <span className="text-4xl">😊</span>
+            </motion.div>
+          );
+        case MASCOT_STATES.CELEBRATING:
+          return (
+            <motion.div
+              animate={{ 
+                scale: [1, 1.2, 1],
+                rotate: [0, 360]
+              }}
+              transition={{ 
+                duration: 1.5,
+                repeat: Infinity,
+                repeatType: "reverse"
+              }}
+            >
+              <span className="text-4xl">🎉</span>
+            </motion.div>
+          );
+        default:
+          return (
+            <motion.div
+              animate={{ 
+                y: [0, -5, 0],
+              }}
+              transition={{ 
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              <span className="text-4xl">👋</span>
+            </motion.div>
+          );
       }
     };
 
@@ -383,7 +465,7 @@ const Home = () => {
         onClick={() => {
           playClick();
           if (state === MASCOT_STATES.IDLE) {
-            speakText('Hello! I\'m Lingo, your language learning friend!');
+            speakText('Hello! I\'m KasaLingo, your language learning friend!');
           }
         }}
       >
@@ -523,138 +605,13 @@ const Home = () => {
         />
       )}
 
-      {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <button
-                onClick={toggleSidebar}
-                className="p-2 rounded-full text-gray-600 hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              >
-                <FiMenu className="h-6 w-6" />
-              </button>
-              <div className="ml-4">
-                <Logo size="small" />
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <button className="p-2 rounded-full text-gray-600 hover:bg-purple-50 relative">
-                <FiBell className="h-6 w-6" />
-                <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-              </button>
-              {user ? (
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm font-medium text-gray-700">
-                    {user.displayName || 'User'}
-                  </span>
-                  <div className="h-8 w-8 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold">
-                    {(user.displayName || 'U').charAt(0).toUpperCase()}
-                  </div>
-                </div>
-              ) : (
-                <a
-                  href="/login"
-                  className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
-                >
-                  Sign In
-                </a>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navigation />
 
-      {/* Sidebar */}
-      <AnimatePresence>
-        {isSidebarOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 z-20"
-              onClick={toggleSidebar}
-            />
-            <motion.div
-              initial={{ x: -300 }}
-              animate={{ x: 0 }}
-              exit={{ x: -300 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-30 overflow-y-auto"
-            >
-              <div className="p-4 border-b border-gray-200">
-                <div className="flex items-center justify-between">
-                  <Logo size="small" />
-                  <button
-                    onClick={toggleSidebar}
-                    className="p-1 rounded-full hover:bg-gray-100"
-                  >
-                    <FiX className="h-5 w-5 text-gray-500" />
-                  </button>
-                </div>
-              </div>
-              <nav className="p-4">
-                <ul className="space-y-2">
-                  {navItems.map((item) => (
-                    <li key={item.path}>
-                      <a
-                        href={item.path}
-                        className="flex items-center p-3 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
-                      >
-                        <span className="mr-3">{item.icon}</span>
-                        {item.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-                {/* Premium Access Section */}
-                <div className="mt-6 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border border-purple-100">
-                  <div className="flex items-start">
-                    <div className="bg-yellow-100 p-2 rounded-lg mr-3">
-                      <FiAward className="w-5 h-5 text-yellow-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-purple-800">Premium Access</h3>
-                      <p className="text-sm text-purple-600 mt-1">Unlock all languages and features!</p>
-                    </div>
-                  </div>
-                  <button 
-                    className="w-full mt-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center text-sm"
-                    onClick={() => {
-                      // TODO: Implement premium subscription flow
-                      console.log('Upgrade to Premium clicked');
-                    }}
-                  >
-                    <span className="flex items-center">
-                      Upgrade Now
-                    </span>
-                  </button>
-                  <p className="text-xs text-center text-purple-500 mt-2">Cancel anytime</p>
-                </div>
-
-                {user && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center p-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
-                    >
-                      <span className="mr-3">
-                        <FiLogOut className="h-5 w-5" />
-                      </span>
-                      Sign Out
-                    </button>
-                  </div>
-                )}
-              </nav>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
         {/* Daily Challenge Banner */}
         {dailyChallenge && !dailyChallenge.completed && (
           <motion.div 
@@ -663,7 +620,7 @@ const Home = () => {
             className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl p-4 mb-8 shadow-md flex flex-col md:flex-row items-center justify-between"
           >
             <div className="flex items-center mb-4 md:mb-0">
-              <FiTrophy className="text-yellow-800 mr-3 text-2xl" />
+              <FiAward className="text-yellow-800 mr-3 text-2xl" />
               <div>
                 <h3 className="font-bold text-yellow-900">Daily Challenge!</h3>
                 <p className="text-yellow-800 text-sm">Translate "{dailyChallenge.word}" to earn {dailyChallenge.points} points</p>
