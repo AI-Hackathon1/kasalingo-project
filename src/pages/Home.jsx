@@ -2,10 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { 
-  FiMic, FiVolume2, FiSend, FiStar, FiHeart, FiClock, FiPlayCircle, FiAlertCircle, FiHome, FiBook, FiAward, FiSettings, FiHelpCircle
+  FiMic, FiMicOff, FiVolume2, FiX, FiSend, FiAward, FiPlayCircle, FiStar, FiLock, FiAlertCircle, FiHome, FiBook, FiSettings, FiHelpCircle
 } from 'react-icons/fi';
+import { ChevronRight, Lock } from 'lucide-react';
 import { FaExchangeAlt, FaRegStar, FaStar } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import Confetti from 'react-confetti';
 import Navigation from '../components/common/Navigation';
 import { translateText } from '../service/gnlp';
@@ -582,7 +583,7 @@ const Home = () => {
   }, [audioUrl]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 relative overflow-hidden">
+    <div className="min-h-screen bg-white relative overflow-hidden">
       <Mascot state={mascotState} />
       
       {/* Sound Toggle */}
@@ -617,18 +618,18 @@ const Home = () => {
           <motion.div 
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl p-4 mb-8 shadow-md flex flex-col md:flex-row items-center justify-between"
+            className="bg-gradient-to-r from-sky-300 to-pink-300 rounded-xl p-4 mb-8 shadow-md flex flex-col md:flex-row items-center justify-between"
           >
             <div className="flex items-center mb-4 md:mb-0">
               <FiAward className="text-yellow-800 mr-3 text-2xl" />
               <div>
-                <h3 className="font-bold text-yellow-900">Daily Challenge!</h3>
-                <p className="text-yellow-800 text-sm">Translate "{dailyChallenge.word}" to earn {dailyChallenge.points} points</p>
+                <h3 className="font-bold text-white">Daily Challenge!</h3>
+                <p className="text-gray-700 text-sm">Translate "{dailyChallenge.word}" to earn {dailyChallenge.points} points</p>
               </div>
             </div>
             <button 
               onClick={startDailyChallenge}
-              className="bg-white text-yellow-700 px-4 py-2 rounded-lg font-medium flex items-center hover:bg-yellow-50 transition-colors"
+              className="bg-white text-sky-600 px-4 py-2 rounded-lg font-medium flex items-center hover:bg-sky-50 transition-colors"
             >
               <FiPlayCircle className="mr-2" /> Start Challenge
             </button>
@@ -639,9 +640,9 @@ const Home = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mt-2 p-4 bg-yellow-100 rounded-lg shadow-md mb-6"
+          className="mt-2 p-6 bg-white rounded-xl shadow-md mb-8 border border-gray-100"
         >
-          <h2 className="text-xl font-bold text-purple-800 mb-3">Translate from English to:</h2>
+          <h2 className="text-2xl font-bold text-indigo-800 mb-4">Translate from English to:</h2>
           <div className="flex flex-col space-y-3">
             <div className="bg-white rounded-lg px-4 py-2 border border-gray-300">
               English
@@ -693,7 +694,7 @@ const Home = () => {
                 <button
                   onClick={handleTranslate}
                   disabled={isTranslating}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-all disabled:opacity-50 flex items-center gap-2"
+                  className="bg-gradient-to-r from-sky-400 to-pink-400 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-all disabled:opacity-50 flex items-center gap-2"
                 >
                   {isTranslating ? 'Translating...' : 'Translate'}
                   <FiSend />
@@ -745,14 +746,14 @@ const Home = () => {
                 transition={{ duration: 0.3 }}
                 className={`rounded-xl shadow-md overflow-hidden ${
                   translatedText 
-                    ? 'bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-100' 
+                    ? 'bg-white border border-gray-100' 
                     : 'bg-gray-100 border-2 border-dashed border-gray-300'
                 }`}
               >
                 <div className="flex flex-col">
                   {translatedText ? (
                     <>
-                      <h3 className="text-sm font-semibold text-purple-700 mb-2 flex items-center">
+                      <h3 className="text-sm font-semibold text-sky-600 mb-2 flex items-center">
                         <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                         Translation in {toLanguage}
                       </h3>
@@ -765,7 +766,7 @@ const Home = () => {
                             navigator.clipboard.writeText(translatedText);
                             playBeep('success');
                           }}
-                          className="text-purple-600 hover:bg-purple-50 p-2 rounded-full transition-colors"
+                          className="text-blue-600 hover:bg-blue-50 p-2 rounded-full transition-colors"
                           title="Copy to clipboard"
                           aria-label="Copy translation"
                         >
@@ -795,7 +796,7 @@ const Home = () => {
                   initial={{ width: 0 }}
                   animate={{ width: '100%' }}
                   transition={{ duration: 0.5, delay: 0.2 }}
-                  className="h-0.5 bg-gradient-to-r from-purple-200 to-blue-200 mt-3"
+                  className="h-0.5 bg-gradient-to-r from-sky-100 to-pink-100 mt-3"
                 />
               </motion.div>
             </div>
@@ -837,114 +838,187 @@ const Home = () => {
           </motion.div>
         )}
 
-        {/* Learning Progress Section */}
+        {/* Interactive Learning Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="mt-6"
+          className="mt-12"
         >
-          <h2 className="text-lg font-bold text-purple-800 mb-3 flex items-center">
-            <FiPlayCircle className="mr-2 text-purple-600" />
-            🚀 Quick Start Lessons
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-sky-600 mb-1 flex items-center">
+                <FiPlayCircle className="mr-2 text-pink-400 animate-bounce" />
+                🎮 Quick Start Lessons
+              </h2>
+              <p className="text-gray-600">Tap to learn and have fun! Each lesson is a new adventure! 🌈</p>
+            </div>
+            <button 
+              onClick={() => playClick()}
+              className="mt-4 md:mt-0 flex items-center text-sm font-medium text-pink-500 hover:text-pink-600 transition-colors"
+            >
+              See all lessons <ChevronRight className="ml-1 h-4 w-4" />
+            </button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
               { 
                 id: 1, 
                 title: '👋 Greetings & Hello', 
+                emoji: '👋',
                 progress: 75, 
-                color: 'green',
+                color: 'from-sky-100 to-pink-50',
+                border: 'border-sky-200',
                 words: '12/15',
-                onClick: () => { playClick(); setInputText('Hello'); setToLanguage('Twi'); }
+                onClick: () => { playClick(); setInputText('Hello'); setToLanguage('Twi'); },
+                hover: 'hover:shadow-lg hover:shadow-sky-100/50'
               },
               { 
                 id: 2, 
-                title: '🔢 Fun with Numbers', 
+                title: '🔢 Fun with Numbers',
+                emoji: '🔢', 
                 progress: 40, 
-                color: 'blue',
+                color: 'from-pink-50 to-sky-50',
+                border: 'border-pink-200',
                 words: '8/20',
-                onClick: () => { playClick(); setInputText('Numbers'); setToLanguage('Twi'); }
+                onClick: () => { playClick(); setInputText('Numbers'); setToLanguage('Twi'); },
+                hover: 'hover:shadow-lg hover:shadow-pink-100/50'
               },
               { 
                 id: 3, 
-                title: '👨‍👩‍👧‍👦 My Family', 
+                title: '👨‍👩‍👧‍👦 My Family',
+                emoji: '👨‍👩‍👧‍👦', 
                 progress: 30, 
-                color: 'purple',
+                color: 'from-purple-50 to-sky-100',
+                border: 'border-purple-200',
                 words: '6/20',
-                onClick: () => { playClick(); setInputText('Family'); setToLanguage('Twi'); }
+                onClick: () => { playClick(); setInputText('Family'); setToLanguage('Twi'); },
+                hover: 'hover:shadow-lg hover:shadow-purple-100/50'
               },
               { 
                 id: 4, 
-                title: '🐘 Animals & Friends', 
+                title: '🐘 Animals & Friends',
+                emoji: '🐘', 
                 progress: 60, 
-                color: 'yellow',
+                color: 'from-amber-50 to-pink-50',
+                border: 'border-amber-200',
                 words: '12/20',
-                onClick: () => { playClick(); setInputText('Animals'); setToLanguage('Twi'); }
+                onClick: () => { playClick(); setInputText('Animals'); setToLanguage('Twi'); },
+                hover: 'hover:shadow-lg hover:shadow-amber-100/50'
               },
               { 
                 id: 5, 
-                title: '🍎 Yummy Foods', 
+                title: '🍎 Yummy Foods',
+                emoji: '🍎', 
                 progress: 50, 
-                color: 'red',
+                color: 'from-rose-50 to-sky-50',
+                border: 'border-rose-200',
                 words: '10/20',
-                onClick: () => { playClick(); setInputText('Food'); setToLanguage('Twi'); }
+                onClick: () => { playClick(); setInputText('Food'); setToLanguage('Twi'); },
+                hover: 'hover:shadow-lg hover:shadow-rose-100/50'
               },
               { 
                 id: 6, 
-                title: '🙋‍♂️ Body Parts', 
+                title: '🙋‍♂️ Body Parts',
+                emoji: '🙋‍♂️', 
                 progress: 25, 
-                color: 'pink',
+                color: 'from-fuchsia-50 to-sky-50',
+                border: 'border-fuchsia-200',
                 words: '5/20',
-                onClick: () => { playClick(); setInputText('Body'); setToLanguage('Twi'); }
+                onClick: () => { playClick(); setInputText('Body'); setToLanguage('Twi'); },
+                hover: 'hover:shadow-lg hover:shadow-fuchsia-100/50'
               },
               { 
                 id: 7, 
-                title: '📅 Days of the Week', 
+                title: '📅 Days of the Week',
+                emoji: '📅', 
                 progress: 15, 
-                color: 'indigo',
+                color: 'from-indigo-50 to-pink-50',
+                border: 'border-indigo-200',
                 words: '3/7',
-                onClick: () => { playClick(); setInputText('Monday'); setToLanguage('Twi'); }
+                onClick: () => { playClick(); setInputText('Monday'); setToLanguage('Twi'); },
+                hover: 'hover:shadow-lg hover:shadow-indigo-100/50'
               },
               { 
                 id: 8, 
-                title: '🌈 Colors', 
+                title: '🌈 Colors',
+                emoji: '🌈', 
                 progress: 35, 
-                color: 'indigo',
+                color: 'from-cyan-50 to-pink-50',
+                border: 'border-cyan-200',
                 words: '7/20',
-                onClick: () => { playClick(); setInputText('Colors'); setToLanguage('Twi'); }
+                onClick: () => { playClick(); setInputText('Colors'); setToLanguage('Twi'); },
+                hover: 'hover:shadow-lg hover:shadow-cyan-100/50'
               },
               { 
                 id: 9, 
-                title: '📆 Months of the Year', 
+                title: '📆 Months of the Year',
+                emoji: '📆', 
                 progress: 10, 
-                color: 'teal',
+                color: 'from-blue-50 to-pink-50',
+                border: 'border-blue-200',
                 words: '2/12',
-                onClick: () => { playClick(); setInputText('January'); setToLanguage('Twi'); }
+                onClick: () => { playClick(); setInputText('January'); setToLanguage('Twi'); },
+                hover: 'hover:shadow-lg hover:shadow-blue-100/50',
+                isLocked: true
               },
             ].map((lesson) => (
               <motion.div 
                 key={lesson.id}
-                whileHover={{ scale: 1.03, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}
+                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className={`bg-gradient-to-br from-${lesson.color}-50 to-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer border border-${lesson.color}-100`}
-                onClick={lesson.onClick}
+                className={`group relative p-0.5 rounded-2xl ${lesson.hover} transition-all cursor-pointer ${lesson.isLocked ? 'opacity-70' : ''}`}
+                onClick={!lesson.isLocked ? lesson.onClick : () => playClick('error')}
               >
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-bold text-gray-800 text-sm sm:text-base">{lesson.title}</h3>
-                  <span className="text-xs bg-white text-gray-600 px-2 py-1 rounded-full border border-gray-200">{lesson.words} words</span>
-                </div>
-                <div className="mt-3 h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <motion.div 
-                    className={`h-2 bg-${lesson.color}-500 rounded-full`}
-                    initial={{ width: 0 }}
-                    animate={{ width: `${lesson.progress}%` }}
-                    transition={{ duration: 1, delay: 0.5 }}
-                  />
-                </div>
-                <div className="flex justify-between mt-2">
-                  <span className="text-xs text-gray-500">Progress</span>
-                  <span className="text-xs font-medium text-gray-700">{lesson.progress}%</span>
+                <div className={`absolute inset-0 bg-gradient-to-r from-sky-300 to-pink-300 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity ${lesson.isLocked ? '!opacity-30' : ''}`}></div>
+                <div className={`relative bg-gradient-to-br ${lesson.color} rounded-2xl p-4 h-full border-2 ${lesson.border} ${lesson.isLocked ? 'border-dashed' : 'border-transparent'}`}>
+                  <div className="flex justify-between items-start">
+                    <div className="flex items-center">
+                      <div className="text-3xl mr-3">{lesson.emoji}</div>
+                      <h3 className="font-bold text-gray-800 text-sm sm:text-base">{lesson.title}</h3>
+                    </div>
+                    {lesson.isLocked ? (
+                      <div className="bg-white/80 backdrop-blur-sm text-xs text-gray-500 px-2 py-1 rounded-full border border-gray-200 flex items-center">
+                        🔒 Locked
+                      </div>
+                    ) : (
+                      <div className="bg-white/80 backdrop-blur-sm text-xs text-sky-600 px-2 py-1 rounded-full border border-sky-200">
+                        {lesson.words} words
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="mt-4">
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-gray-500">Progress</span>
+                      <span className="font-medium text-sky-600">{lesson.progress}%</span>
+                    </div>
+                    <div className="h-2 bg-white rounded-full overflow-hidden border border-gray-100">
+                      <motion.div 
+                        className="h-full bg-gradient-to-r from-sky-400 to-pink-400 rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${lesson.progress}%` }}
+                        transition={{ duration: 1, delay: 0.5, type: 'spring' }}
+                      />
+                    </div>
+                  </div>
+                  
+                  {!lesson.isLocked && (
+                    <div className="mt-3 flex justify-end">
+                      <button 
+                        className="text-xs font-medium text-sky-600 hover:text-sky-700 flex items-center group-hover:translate-x-1 transition-transform"
+                        onClick={(e) => { e.stopPropagation(); lesson.onClick(); }}
+                      >
+                        Start learning <ChevronRight className="ml-0.5 h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  )}
+                  
+                  {lesson.isLocked && (
+                    <div className="absolute inset-0 bg-white/50 backdrop-blur-[1px] rounded-2xl flex items-center justify-center">
+                      <Lock className="h-5 w-5 text-gray-400" />
+                    </div>
+                  )}
                 </div>
               </motion.div>
             ))}
