@@ -1,8 +1,10 @@
 import React from 'react';
+import Navigation from '../components/common/Navigation';
 
 const ProfilePage = () => {
   return (
-    <div className="p-6">
+    <div>
+      <Navigation/>
       <h1>Profile Page</h1>
       {/* Content will be added later */}
     </div>
