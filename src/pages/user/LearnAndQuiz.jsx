@@ -9,8 +9,9 @@ import {
   Star,
   ArrowLeft,
   Mic,
-  CheckCircle,
+  CheckCircle as CheckCircleIcon,
   X,
+  XCircle as XCircleIcon,
   Sparkles,
   Award,
   VolumeX,
@@ -464,6 +465,45 @@ const initialLessonContent = lessonsData['twi-language-basics'] || {
   ]
 };
 
+// Sample Quiz Questions
+const quizQuestions = [
+  {
+    question: 'How do you say "Hello" in Twi?',
+    options: ['Maakye', 'Ɛte sɛn?', 'Mepa wo kyɛw', 'Yoo'],
+    correctAnswer: 'Maakye',
+    explanation: '"Maakye" is a common way to say "Good morning" or "Hello" in Twi.',
+    emoji: '☀️'
+  },
+  {
+    question: 'What does "Me da wo ase" mean?',
+    options: ['Please', 'Thank you', 'How are you?', 'Goodbye'],
+    correctAnswer: 'Thank you',
+    explanation: '"Me da wo ase" translates to "Thank you".',
+    emoji: '🙏'
+  },
+  {
+    question: 'Which of these means "Yes"?',
+    options: ['Daabi', 'Aane', 'Yoo', 'Ampa'],
+    correctAnswer: 'Aane',
+    explanation: '"Aane" is the Twi word for "Yes".',
+    emoji: '✅'
+  },
+  {
+    question: 'How do you ask "What is your name?" in Twi?',
+    options: ['Yɛfrɛ me...', 'Wo din de sɛn?', 'Me ho yɛ', 'Ɛte sɛn?'],
+    correctAnswer: 'Wo din de sɛn?',
+    explanation: '"Wo din de sɛn?" is how you ask for someone\'s name.',
+    emoji: '❓'
+  },
+  {
+    question: 'What is "Good afternoon" in Twi?',
+    options: ['Maadwo', 'Maakye', 'Maaha', 'Da yie'],
+    correctAnswer: 'Maaha',
+    explanation: '"Maaha" is used for "Good afternoon".',
+    emoji: '☀️'
+  }
+];
+
 const LearnAndQuiz = () => {
   const { lessonId } = useParams();
   const navigate = useNavigate();
@@ -519,16 +559,14 @@ const LearnAndQuiz = () => {
     quizCompleted: false,
     showConfetti: false,
     currentPhase: 'learning', // 'learning' or 'quiz'
-    starsEarned: 0,
-    speakingWords: {}
   });
-  
+
   // Get current section data
   const currentSectionData = useMemo(() => {
     if (!state.lesson?.sections?.length) return null;
     return state.lesson.sections[state.currentSection];
   }, [state.lesson, state.currentSection]);
-  
+
   // Destructure state for easier access
   const {
     currentSection,
@@ -559,56 +597,6 @@ const LearnAndQuiz = () => {
       </div>
     );
   }
-
-  const playSound = (sound) => {
-    // Placeholder for sound effects - will be replaced with actual sound files
-    console.log(`Playing sound: ${sound}`);
-    // Example: new Howl({ src: [`/sounds/${sound}.mp3`] }).play();
-  };
-
-  // Quiz questions with more variety and fun elements
-  const quizQuestions = [
-    {
-      question: 'How do you say "Thank you" in Twi?',
-      options: ['Mepa wo kyɛw', 'Meda wo ase', 'Wo ho te sɛn?', 'Aane'],
-      correctAnswer: 'Meda wo ase',
-      audio: 'thank_you.mp3',
-      emoji: '🙏',
-      hint: 'You say this when someone helps you'
-    },
-    {
-      question: 'What does "Mepa wo kyɛw" mean?',
-      options: ['Thank you', 'Please', 'Goodbye', 'Hello'],
-      correctAnswer: 'Please',
-      audio: 'please.mp3',
-      emoji: '🥺',
-      hint: 'You say this when asking for something nicely'
-    },
-    {
-      question: 'How do you ask "How are you?" in Twi?',
-      options: ['Me din de...', 'Wo ho te sɛn?', 'Daabi', 'Aane'],
-      correctAnswer: 'Wo ho te sɛn?',
-      audio: 'how_are_you.mp3',
-      emoji: '🤔',
-      hint: 'You ask this to check on someone'
-    },
-    {
-      question: 'What does "Me ho yɛ" mean?',
-      options: ['I am hungry', 'I am fine', 'I am happy', 'I am sad'],
-      correctAnswer: 'I am fine',
-      audio: 'i_am_fine.mp3',
-      emoji: '😊',
-      hint: 'You say this when someone asks how you are and you\'re doing well'
-    },
-    {
-      question: 'How do you say "Good morning" in Twi?',
-      options: ['Maaha', 'Maakye', 'Maadwo', 'Ɛte sɛn?'],
-      correctAnswer: 'Maakye',
-      audio: 'good_morning.mp3',
-      emoji: '🌅',
-      hint: 'You say this when you see someone in the morning'
-    }
-  ];
 
 
   // State updater function
@@ -933,104 +921,108 @@ const LearnAndQuiz = () => {
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {currentData.words.map((word, index) => {
-                const isSpeaking = speakingWords[index] || false;
-                
-                const handleSpeak = () => {
-                  if ('speechSynthesis' in window) {
-                    const utterance = new SpeechSynthesisUtterance(word.twi);
-                    utterance.lang = 'ak-GH';
-                    utterance.rate = 0.8;
-                    
-                    updateState({
-                      speakingWords: {
-                        ...speakingWords,
-                        [index]: true
-                      }
-                    });
-                    
-                    utterance.onend = () => {
+              {currentData.words && currentData.words.length > 0 ? (
+                currentData.words.map((word, index) => {
+                  const isSpeaking = speakingWords && speakingWords[index] || false;
+                  
+                  const handleSpeak = () => {
+                    if ('speechSynthesis' in window) {
+                      const utterance = new SpeechSynthesisUtterance(word.twi);
+                      utterance.lang = 'ak-GH';
+                      utterance.rate = 0.8;
+                      
                       updateState({
                         speakingWords: {
                           ...speakingWords,
-                          [index]: false
+                          [index]: true
                         }
                       });
-                    };
-                    
-                    speechSynthesis.speak(utterance);
-                    playSound('button_click');
-                  }
-                };
-                
-                return (
-                  <motion.div
-                    key={index}
-                    className="bg-white p-6 rounded-2xl shadow-lg border-2 border-transparent hover:border-purple-200 transition-all duration-300 hover:shadow-xl"
-                    initial={{ y: 20, opacity: 0, scale: 0.95 }}
-                    animate={{ y: 0, opacity: 1, scale: 1 }}
-                    transition={{ 
-                      delay: 0.1 * index,
-                      type: 'spring',
-                      stiffness: 100,
-                      damping: 10
-                    }}
-                    whileHover={{ y: -5 }}
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <h3 className="text-2xl font-bold text-gray-800 mb-1">{word.twi}</h3>
-                        <p className="text-gray-700 text-lg">{word.english}</p>
-                      </div>
-                      <motion.span 
-                        className="text-4xl"
-                        animate={isSpeaking ? { scale: [1, 1.1, 1] } : {}}
-                        transition={{ duration: 1, repeat: Infinity }}
-                      >
-                        {word.emoji}
-                      </motion.span>
-                    </div>
-                    
-                    <div className="mt-4 pt-3 border-t border-gray-100">
-                      <div className="flex justify-between items-center">
+                      
+                      utterance.onend = () => {
+                        updateState({
+                          speakingWords: {
+                            ...speakingWords,
+                            [index]: false
+                          }
+                        });
+                      };
+                      
+                      speechSynthesis.speak(utterance);
+                      playSound('button_click');
+                    }
+                  };
+                  
+                  return (
+                    <motion.div
+                      key={index}
+                      className="bg-white p-6 rounded-2xl shadow-lg border-2 border-transparent hover:border-purple-200 transition-all duration-300 hover:shadow-xl"
+                      initial={{ y: 20, opacity: 0, scale: 0.95 }}
+                      animate={{ y: 0, opacity: 1, scale: 1 }}
+                      transition={{ 
+                        delay: 0.1 * index,
+                        type: 'spring',
+                        stiffness: 100,
+                        damping: 10
+                      }}
+                      whileHover={{ y: -5 }}
+                    >
+                      <div className="flex items-start justify-between mb-3">
                         <div>
-                          <p className="text-sm text-gray-500 mb-1">Pronunciation:</p>
-                          <p className="text-purple-700 font-medium">{word.pronunciation}</p>
+                          <h3 className="text-2xl font-bold text-gray-800 mb-1">{word.twi}</h3>
+                          <p className="text-gray-700 text-lg">{word.english}</p>
                         </div>
-                        <motion.button
-                          onClick={handleSpeak}
-                          className="p-2 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
-                          whileTap={{ scale: 0.9 }}
-                          title="Listen to pronunciation"
+                        <motion.span 
+                          className="text-4xl"
+                          animate={isSpeaking ? { scale: [1, 1.1, 1] } : {}}
+                          transition={{ duration: 1, repeat: Infinity }}
                         >
-                          {isSpeaking ? (
-                            <motion.div
-                              animate={{ rotate: 360 }}
-                              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                            >
-                              <VolumeX className="h-5 w-5" />
-                            </motion.div>
-                          ) : (
-                            <Volume2 className="h-5 w-5" />
-                          )}
-                        </motion.button>
+                          {word.emoji}
+                        </motion.span>
                       </div>
-                    </div>
-                    
-                    {word.example && (
-                      <motion.div 
-                        className="mt-4 p-3 bg-blue-50 rounded-lg"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                      >
-                        <p className="text-sm text-blue-800 font-medium">Example:</p>
-                        <p className="text-blue-700">"{word.example}"</p>
-                      </motion.div>
-                    )}
-                  </motion.div>
-                );
-              })}
+                      
+                      <div className="mt-4 pt-3 border-t border-gray-100">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <p className="text-sm text-gray-500 mb-1">Pronunciation:</p>
+                            <p className="text-purple-700 font-medium">{word.pronunciation}</p>
+                          </div>
+                          <motion.button
+                            onClick={handleSpeak}
+                            className="p-2 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                            whileTap={{ scale: 0.9 }}
+                            title="Listen to pronunciation"
+                          >
+                            {isSpeaking ? (
+                              <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                              >
+                                <VolumeX className="h-5 w-5" />
+                              </motion.div>
+                            ) : (
+                              <Volume2 className="h-5 w-5" />
+                            )}
+                          </motion.button>
+                        </div>
+                      </div>
+                      
+                      {word.example && (
+                        <motion.div 
+                          className="mt-4 p-3 bg-blue-50 rounded-lg"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.2 }}
+                        >
+                          <p className="text-sm text-blue-800 font-medium">Example:</p>
+                          <p className="text-blue-700">"{word.example}"</p>
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  );
+                })
+              ) : (
+                <p className="text-center text-gray-500 col-span-full">Lesson content (words) not available for this section.</p>
+              )}
             </div>
 
             <motion.div 
@@ -1329,7 +1321,7 @@ const LearnAndQuiz = () => {
               transition={{ delay: 0.4 }}
             >
               <Button 
-                onClick={() => setCurrentPhase('quiz')}
+                onClick={() => setState(prev => ({ ...prev, currentPhase: 'quiz' }))}
                 className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-4 px-8 text-lg font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center"
               >
                 Start Quiz
@@ -1387,6 +1379,106 @@ const LearnAndQuiz = () => {
           </div>
         );
     }
+  };
+
+  const renderQuizQuestion = () => {
+    if (state.currentQuestionIndex >= quizQuestions.length) {
+      return <div className="p-6 text-center text-red-500">Error: Question index out of bounds. Quiz should have completed.</div>;
+    }
+    const currentQuestion = quizQuestions[state.currentQuestionIndex];
+
+    if (!currentQuestion) {
+      return <div className="p-6 text-center">Loading question...</div>;
+    }
+
+    return (
+      <motion.div
+        key={state.currentQuestionIndex} // Ensure re-render and animation on question change
+        className="p-6 md:p-10 bg-white rounded-2xl shadow-xl border border-gray-100 max-w-3xl mx-auto"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -30 }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
+      >
+        <div className="mb-6 md:mb-8">
+          <p className="text-sm text-purple-600 font-semibold mb-1 tracking-wide">
+            Question {state.currentQuestionIndex + 1} of {quizQuestions.length}
+          </p>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 leading-tight flex items-center">
+            {currentQuestion.emoji && <span className="mr-3 text-3xl md:text-4xl">{currentQuestion.emoji}</span>}
+            <span>{currentQuestion.question}</span>
+          </h2>
+        </div>
+
+        <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
+          {currentQuestion.options.map((option, index) => {
+            const isSelected = state.selectedAnswer === option;
+            const isCorrectOption = option === currentQuestion.correctAnswer;
+            
+            let buttonClass = "w-full text-left p-4 rounded-lg border-2 transition-all duration-200 ease-in-out transform focus:outline-none focus:ring-2 focus:ring-purple-400";
+            let icon = null;
+
+            if (state.showFeedback) {
+              if (isCorrectOption) {
+                buttonClass += " bg-green-50 border-green-400 text-green-700 font-semibold cursor-default";
+                icon = <CheckCircleIcon className="h-5 w-5 md:h-6 md:w-6 text-green-600" />;
+              } else if (isSelected && !state.isCorrect) {
+                buttonClass += " bg-red-50 border-red-400 text-red-700 font-semibold cursor-default";
+                icon = <XCircleIcon className="h-5 w-5 md:h-6 md:w-6 text-red-600" />;
+              } else {
+                buttonClass += " bg-gray-50 border-gray-300 text-gray-500 opacity-60 cursor-default pointer-events-none";
+              }
+            } else {
+              if (isSelected) {
+                buttonClass += " bg-purple-100 border-purple-500 text-purple-700 font-semibold shadow-md scale-[1.02]";
+              } else {
+                buttonClass += " bg-white border-gray-300 text-gray-800 hover:border-purple-400 hover:bg-purple-50 hover:scale-[1.02]";
+              }
+            }
+
+            return (
+              <motion.button
+                key={index}
+                onClick={() => handleAnswerSelect(option)}
+                className={buttonClass}
+                disabled={state.showFeedback}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 + 0.1, type: 'spring', stiffness: 120, damping: 12 }}
+                whileHover={!state.showFeedback ? { scale: 1.03, transition: { duration: 0.15} } : {}}
+                whileTap={!state.showFeedback ? { scale: 0.98, transition: { duration: 0.1 } } : {}}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-base md:text-lg">{option}</span>
+                  {state.showFeedback && icon && (
+                    <motion.div initial={{scale:0.5, opacity: 0}} animate={{scale:1, opacity: 1}} transition={{delay: 0.1, type: 'spring', stiffness:150}}>{icon}</motion.div>
+                  )}
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
+
+        {state.showFeedback && (
+          <motion.div
+            className={`p-4 md:p-5 rounded-lg mt-6 text-center border ${state.isCorrect ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.3 }}
+          >
+            <h3 className="font-bold text-lg md:text-xl mb-1">
+              {state.isCorrect ? 'Correct! 🎉' : 'Not quite... 🤔'}
+            </h3>
+            {currentQuestion.explanation && (
+              <p className="text-sm md:text-base">{currentQuestion.explanation}</p>
+            )}
+            {currentQuestion.hint && !state.isCorrect && (
+               <p className="text-sm md:text-base mt-1 italic opacity-80">Hint: {currentQuestion.hint}</p>
+            )}
+          </motion.div>
+        )}
+      </motion.div>
+    );
   };
 
   // Render quiz results
