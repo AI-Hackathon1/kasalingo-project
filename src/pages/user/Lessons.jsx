@@ -37,6 +37,18 @@ const Lessons = () => {
   const lessons = [
     // Beginner Lessons (Simple, foundational concepts)
     {
+      id: 'twi-greetings',
+      title: '👋 Twi Greetings & Basic Phrases',
+      description: 'Master essential Twi greetings and everyday expressions',
+      difficulty: 'Beginner',
+      duration: '15-20 min',
+      isPremium: false,
+      progress: 0,
+      xpReward: 75,
+      icon: '👋',
+      path: '/lessons/twi-greetings'
+    },
+    {
       id: 1,
       title: '🌟 Greetings & Hello',
       description: 'Learn basic greetings and introductions',

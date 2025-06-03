@@ -18,7 +18,9 @@ const LessonCard = ({
   const handleCardClick = (e) => {
     e.preventDefault();
     if (isLocked) return;
-    navigate(`/lessons/${lesson.id}`);
+    // Use the path if available, otherwise fall back to the ID
+    const targetPath = lesson.path || `/lessons/${lesson.id}`;
+    navigate(targetPath);
   };
   
   // Color variants based on difficulty level
