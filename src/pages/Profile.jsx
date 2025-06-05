@@ -1,6 +1,6 @@
 import React from 'react';
 import Navigation from '../components/common/Navigation';
-import Navbar from '../components/navbar';
+
 
 const ProfilePage = () => {
   return (
