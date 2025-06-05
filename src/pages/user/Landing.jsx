@@ -1,6 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom"; // Fix react-router to react-router-dom
-import Footer from "@components/footer"; // Update path to match vite.config.js alias
+import { Link } from "react-router-dom";
+import Footer from "@components/Footer";
+import ErrorBoundary from "../../components/ErrorBoundary"; // Update import path
 
 import Lovely from "../../assets/images/Lovely.jpg";
 import Lovely1 from "../../assets/images/Lovely1.jpg";
@@ -16,7 +17,7 @@ import Topnav from "../../components/Topnav";
 
 const Landing = () => {
   return (
-    <div>
+    <ErrorBoundary>
       <Topnav />
       <section>
         <div
@@ -335,7 +336,7 @@ const Landing = () => {
       </section>
 
       <Footer />
-    </div>
+    </ErrorBoundary>
   );
 };
 
