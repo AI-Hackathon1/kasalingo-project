@@ -30,8 +30,17 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          components: ['@components/navbar', '@components/footer'],
+          components: ['@components/Topnav', '@components/footer'],
           pages: ['@pages/user/Landing', '@pages/Home'],
+        },
+        // Add asset handling
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name.split('.')
+          let extType = info[info.length - 1]
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
+            extType = 'img'
+          }
+          return `assets/${extType}/[name]-[hash][extname]`
         },
       },
     },
@@ -39,9 +48,14 @@ export default defineConfig({
     terserOptions: {
       compress: {
         drop_console: true,
-        drop_debugger: true
+        drop_debugger: true,
+        pure_funcs: ['console.log'] // Remove console.logs
       }
     },
     chunkSizeWarningLimit: 2000,
+    // Add source maps for production debugging
+    sourcemap: true,
+    // Add performance optimizations
+    target: 'esnext',
   },
 })
