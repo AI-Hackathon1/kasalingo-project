@@ -12,7 +12,7 @@ import Lovely8 from "../../assets/images/Lovely8.jpeg";
 import Lovely9 from "../../assets/images/Lovely9.jpeg";
 import Lovely10 from "../../assets/images/Lovely10.jpeg";
 import { Link } from "react-router";
-import Navbar from "../../components/navbar";
+import Navbar from "@components/navbar";
 
 const Landing = () => {
   return (

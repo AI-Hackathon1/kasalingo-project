@@ -30,8 +30,8 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          components: ['./src/components/navbar', './src/components/footer'],
-          pages: ['./src/pages/user/Landing', './src/pages/Home'],
+          components: ['@components/navbar', '@components/footer'],
+          pages: ['@pages/user/Landing', '@pages/Home'],
         },
       },
     },
