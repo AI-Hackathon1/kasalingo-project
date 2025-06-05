@@ -12,12 +12,16 @@ import Lovely8 from "../../assets/images/Lovely8.jpeg";
 import Lovely9 from "../../assets/images/Lovely9.jpeg";
 import Lovely10 from "../../assets/images/Lovely10.jpeg";
 import { Link } from "react-router";
-import Navbar from "@components/Navbar";
+
+
+import Topnav from "../../components/Topnav";
+
+
 
 const Landing = () => {
   return (
     <div>
-      <Navbar/>
+      <Topnav/>
       <section>
         <div
           className="relative bg-cover bg-center bg-no-repeat min-h-[70vh] p-8 flex items-center justify-start text-start brightness-125"

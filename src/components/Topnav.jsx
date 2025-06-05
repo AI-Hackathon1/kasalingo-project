@@ -1,9 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Link } from 'react-router'
 
-
-
-const Navbar = () => {
+const Topnav = () => {
   return (
     <div className="w-full overflow-hidden">
       {/* Navbar with background image */}
@@ -37,7 +35,8 @@ const Navbar = () => {
         </svg>
       </div>
     </div>
-  );
-};
 
-export default Navbar;
+  )
+}
+
+export default Topnav
