@@ -1,5 +1,5 @@
 import React from 'react'
-import Navbar from '../../components/navbar'
+import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import Lovely from '../../assets/images/Lovely.jpg'
 import Lovely1 from '../../assets/images/Lovely1.jpg'
@@ -20,8 +20,9 @@ const Landing = () => {
   return (
     <div>
  
+<Navbar/>
 
-      <Navbar />
+      
 
             <section>
         <div className="relative bg-cover bg-center bg-no-repeat min-h-[70vh] p-8 flex items-center justify-start text-start brightness-125"
