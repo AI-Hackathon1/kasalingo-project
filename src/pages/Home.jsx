@@ -11,6 +11,7 @@ import Confetti from 'react-confetti';
 import Navigation from '../components/common/Navigation';
 import { translateText } from '../service/gnlp';
 import { startRecording, textToSpeech, transcribeAudio } from '../service/voice';
+import { gnlp } from '../service/gnlp.js';
 
 // Sound effects using Web Audio API
 const playBeep = (type = 'success') => {

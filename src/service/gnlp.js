@@ -65,3 +65,9 @@ export const translateText = async (text, sourceLang, targetLang) => {
     throw new Error('Translation failed. Please try again.');
   }
 };
+
+// Add a named export
+export const gnlp = {
+  fetchLanguages,
+  translateText
+};
