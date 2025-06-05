@@ -30,7 +30,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          components: ['@components/Topnav', '@components/footer'],
+          components: ['@components/Topnav', '@components/Footer'], // Updated to match component filename
           pages: ['@pages/user/Landing', '@pages/Home'],
         },
         // Add asset handling
