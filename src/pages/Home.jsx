@@ -9,9 +9,8 @@ import { FaExchangeAlt, FaRegStar, FaStar } from 'react-icons/fa';
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import Confetti from 'react-confetti';
 import Navigation from '../components/common/Navigation';
-import { translateText } from '../service/gnlp';
+import { translateText, fetchLanguages } from '../service/gnlp';
 import { startRecording, textToSpeech, transcribeAudio } from '../service/voice';
-import { gnlp } from '../service/gnlp.js';
 
 // Sound effects using Web Audio API
 const playBeep = (type = 'success') => {
@@ -104,7 +103,7 @@ const Home = () => {
   useEffect(() => {
     const loadLanguages = async () => {
       try {
-        const langs = await import('../service/gnlp').then(m => m.fetchLanguages());
+        const langs = await fetchLanguages();
         setAvailableLanguages(langs);
       } catch (err) {
         console.error('Failed to load languages, using defaults', err);
