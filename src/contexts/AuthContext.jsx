@@ -171,11 +171,12 @@ export const AuthProvider = ({ children }) => {
       const { isAdmin, ...registrationData } = userData;
       
       // Format the registration data according to API requirements
+      // This now matches the API documentation: age as string, confirmPassword included.
       const formattedData = {
         userName: registrationData.userName,
         name: registrationData.name,
         email: registrationData.email,
-        age: registrationData.age,
+        age: registrationData.age, // Ensured to be string by Register.jsx
         password: registrationData.password,
         confirmPassword: registrationData.confirmPassword
       };
